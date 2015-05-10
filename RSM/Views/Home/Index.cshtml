@@ -1,0 +1,185 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+<br/>
+<div class="row">
+    <div class="col-md-4 input-group">
+        <input data-bind="value: searchQuery" class="form-control input-lg"/>
+    </div>
+    <div class="col-md-4 input-group">
+        <input data-bind="value: searchWhere" class="form-control input-lg"/>
+    </div>
+    <div class="col-md-4">
+        <button class="btn btn-lg btn-primary" data-bind="click: getMap">Search</button>
+    </div>
+</div>
+<div class="row">
+    <button class="btn btn-lg btn-primary" data-bind="click: saveLocations">Save</button>
+</div>
+<br />
+<div class="row">
+    <div id="mapDiv" style="height: 800px; position: relative;"></div>
+</div>
+
+<script type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0&mkt=pl-pl"></script>
+
+<script type="text/javascript">
+
+
+    var map = null;
+    var pinInfobox = null;
+    var infoboxLayer = new Microsoft.Maps.EntityCollection();
+    var directionsManager = null;
+    var query = "atrakcje turystyczne";
+    var locations = null;
+    function createWalkingRoute() {
+        directionsManager = new Microsoft.Maps.Directions.DirectionsManager(map);
+        Microsoft.Maps.Events.addHandler(directionsManager, "directionsUpdated", displayDistanceAndTime);
+    }
+
+    function displayDistanceAndTime(e) {
+        //alert("Total Distance: " + e.routeSummary[0].distance + " miles\n" + "Total Time: " + e.routeSummary[0].time / 60 + " minutes");
+        pinInfobox.setOptions({ title: title, offset: new Microsoft.Maps.Point(0, 0), description: "Distance: " + e.routeSummary[0].distance.toFixed(2) + " km" + ", Duration: " + (e.routeSummary[0].time / 60).toFixed(2) + " min", visible: true });
+        var newLoc = new Microsoft.Maps.Location(Math.sqrt(Math.pow(locs[0].latitude, 2) / 2 + Math.pow(locs[1].latitude, 2) / 2), Math.sqrt(Math.pow(locs[0].longitude, 2) / 2 + Math.pow(locs[1].longitude, 2) / 2));
+        pinInfobox.setLocation(newLoc);
+    }
+
+    function displayInfobox(e) {
+        if (e.targetType === "pushpin") {
+            pinInfobox.setOptions({ title: e.target.Title, description: e.target.Description, visible: true, offset: new Microsoft.Maps.Point(0, 25) });
+            pinInfobox.setLocation(e.target.getLocation());
+        } if (e.targetType === "polyline") {
+            //pinInfobox.setOptions({ title: e.target.Title, description: e.target.Description, visible: true });
+            title = e.target.Title;
+            //debugger;
+            locs = e.target.getLocations();
+            directionsManager.resetDirections();
+            /*var newLoc = new Microsoft.Maps.Location(Math.sqrt(Math.pow(locs[0].latitude, 2) / 2 + Math.pow(locs[1].latitude, 2) / 2), Math.sqrt(Math.pow(locs[0].longitude, 2) / 2 + Math.pow(locs[1].longitude, 2) / 2));
+            pinInfobox.setLocation(newLoc);*/
+
+            directionsManager.setRequestOptions({ routeMode: Microsoft.Maps.Directions.RouteMode.walking });
+            var first = new Microsoft.Maps.Directions.Waypoint({ location: locs[0] });
+            directionsManager.addWaypoint(first);
+
+            var second = new Microsoft.Maps.Directions.Waypoint({ location: locs[1] });
+            directionsManager.addWaypoint(second);
+            directionsManager.calculateDirections();
+            //debugger;
+        }
+
+    }
+
+    function blueLine(e) {
+        if (e.targetType === "polyline") {
+            e.target.setOptions({ strokeColor: new Microsoft.Maps.Color(255, 0, 0, 255) });
+        }
+    }
+
+    function redLine(e) {
+        if (e.targetType === "polyline") {
+            e.target.setOptions({ strokeColor: new Microsoft.Maps.Color(255, 255, 0, 0) });
+        }
+    }
+
+
+    function geocodeCallback(geocodeResult, userData) {
+        locations = geocodeResult.searchResults.map(function(elem) {
+            return {
+                latitude: elem.location.latitude,
+                longitude: elem.location.longitude,
+                name: elem.name
+            }
+        });
+        map.setView({center: geocodeResult.searchResults[0].location, zoom: 13});
+        geocodeResult.searchResults.forEach(function(elem, index) {
+            var pin = new Microsoft.Maps.Pushpin(elem.location);
+            pin.Title = elem.name;
+            pin.Description = elem.address + " " + elem.city + ", Grade: " + 10;
+            map.entities.push(pin);
+            Microsoft.Maps.Events.addHandler(pin, "click", displayInfobox);
+
+            geocodeResult.searchResults.forEach(function(elemInner, indexInner) {
+                var lineVertices = new Array(elem.location, elemInner.location);
+                var line = new Microsoft.Maps.Polyline(lineVertices);
+                line.Title = "Route from \"" + elem.name + "\" to \"" + elemInner.name + "\"";
+                line.Description = "Distance: " + "2,7 km" + ", Duration: " + "32 min";
+                map.entities.push(line);
+                Microsoft.Maps.Events.addHandler(line, "click", displayInfobox);
+                Microsoft.Maps.Events.addHandler(line, "mouseover", blueLine);
+                Microsoft.Maps.Events.addHandler(line, "mouseout", redLine);
+            });
+
+        });
+    }
+
+    function drawLocations(locations) {
+        map.setView({ center: new Microsoft.Maps.Location(locations[0].Latitude, locations[0].Longitude), zoom: 13 });
+        locations.forEach(function (elem, index) {
+            var elemLocation = new Microsoft.Maps.Location(elem.Latitude, elem.Longitude);
+            var pin = new Microsoft.Maps.Pushpin(elemLocation);
+            pin.Title = elem.Name;
+            pin.Description = elem.Address + ", Rate: " + elem.Rate;
+            map.entities.push(pin);
+            Microsoft.Maps.Events.addHandler(pin, "click", displayInfobox);
+
+            locations.forEach(function (elemInner, indexInner) {
+                var elemInnerLocation = new Microsoft.Maps.Location(elemInner.Latitude, elemInner.Longitude);
+                var lineVertices = new Array(elemLocation, elemInnerLocation);
+                var line = new Microsoft.Maps.Polyline(lineVertices);
+                line.Title = "Route from \"" + elem.Name + "\" to \"" + elemInner.Name + "\"";
+                line.Description = "Distance: " + "2,7 km" + ", Duration: " + "32 min";
+                map.entities.push(line);
+                Microsoft.Maps.Events.addHandler(line, "click", displayInfobox);
+                Microsoft.Maps.Events.addHandler(line, "mouseover", blueLine);
+                Microsoft.Maps.Events.addHandler(line, "mouseout", redLine);
+            });
+
+        });
+    }
+
+    function searchModuleLoaded() {
+        
+    }
+
+    function GetMap() {
+        map = new Microsoft.Maps.Map(document.getElementById("mapDiv"), {
+            credentials: "AuM7che94B5gbSaSIvcb7kXrr_tW7ZMq81q_rfaZibeZtXakscM4u-WP9OB7K58V",
+            center: new Microsoft.Maps.Location(51.110251, 17.036105),
+            zoom: 13
+        });
+        Microsoft.Maps.loadModule("Microsoft.Maps.Directions", { callback: createWalkingRoute });
+        Microsoft.Maps.loadModule("Microsoft.Maps.Search", { callback: searchModuleLoaded });
+        var infoboxOptions = { visible: false, title: "title", description: "description" };
+        pinInfobox = new Microsoft.Maps.Infobox(new Microsoft.Maps.Location(0, 0), infoboxOptions);
+        infoboxLayer.push(pinInfobox);
+        //map.entities.push(infoboxLayer);
+    }
+
+    function ViewModel() {
+        var that = this;
+        this.searchQuery = ko.observable("atrakcje turystyczne");
+        this.searchWhere = ko.observable("wrocław");
+        this.getMap = function () {
+            map.entities.clear();
+            pinInfobox.setOptions({ visible: false });
+            var query = that.searchQuery();
+            var where = that.searchWhere();
+            map.entities.push(infoboxLayer);
+            //var searchManager = new Microsoft.Maps.Search.SearchManager(map);
+            //searchManager.search({ what: query, where: where, count: 50, callback: geocodeCallback });
+            $.post("/Home/FindLocations", { query: query, near: where }, function (result) {
+                locations = result;
+                drawLocations(result.locations);
+            });
+        }
+        this.saveLocations = function () {
+            $.post("/Home/SaveDataSet", { locations: JSON.stringify(locations.locations) });
+        }
+    }
+
+    $(document).ready(function() {
+        GetMap();
+        ko.applyBindings(new ViewModel());
+        
+    });
+</script>
