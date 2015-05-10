@@ -1,21 +1,25 @@
 ﻿@{
     ViewBag.Title = "Home Page";
 }
-<br/>
+<br />
 <div class="row">
-    <div class="col-md-4 input-group">
-        <input data-bind="value: searchQuery" class="form-control input-lg"/>
+    <div class="col-md-3 input-group">
+        <input data-bind="value: searchQuery" class="form-control input-lg" />
     </div>
-    <div class="col-md-4 input-group">
-        <input data-bind="value: searchWhere" class="form-control input-lg"/>
+    <div class="col-md-3 input-group">
+        <input data-bind="value: searchWhere" class="form-control input-lg" />
     </div>
-    <div class="col-md-4">
+    <div class="col-md-2 input-group">
+        <input data-bind="value: searchHowMany" class="form-control input-lg" />
+    </div>
+    <div class="col-md-2">
         <button class="btn btn-lg btn-primary" data-bind="click: getMap">Search</button>
     </div>
+    <div class="col-md-2">
+        <button class="btn btn-lg btn-primary" data-bind="click: saveLocations">Save</button>
+    </div>
 </div>
-<div class="row">
-    <button class="btn btn-lg btn-primary" data-bind="click: saveLocations">Save</button>
-</div>
+
 <br />
 <div class="row">
     <div id="mapDiv" style="height: 800px; position: relative;"></div>
@@ -83,22 +87,22 @@
 
 
     function geocodeCallback(geocodeResult, userData) {
-        locations = geocodeResult.searchResults.map(function(elem) {
+        locations = geocodeResult.searchResults.map(function (elem) {
             return {
                 latitude: elem.location.latitude,
                 longitude: elem.location.longitude,
                 name: elem.name
             }
         });
-        map.setView({center: geocodeResult.searchResults[0].location, zoom: 13});
-        geocodeResult.searchResults.forEach(function(elem, index) {
+        map.setView({ center: geocodeResult.searchResults[0].location, zoom: 13 });
+        geocodeResult.searchResults.forEach(function (elem, index) {
             var pin = new Microsoft.Maps.Pushpin(elem.location);
             pin.Title = elem.name;
             pin.Description = elem.address + " " + elem.city + ", Grade: " + 10;
             map.entities.push(pin);
             Microsoft.Maps.Events.addHandler(pin, "click", displayInfobox);
 
-            geocodeResult.searchResults.forEach(function(elemInner, indexInner) {
+            geocodeResult.searchResults.forEach(function (elemInner, indexInner) {
                 var lineVertices = new Array(elem.location, elemInner.location);
                 var line = new Microsoft.Maps.Polyline(lineVertices);
                 line.Title = "Route from \"" + elem.name + "\" to \"" + elemInner.name + "\"";
@@ -138,7 +142,7 @@
     }
 
     function searchModuleLoaded() {
-        
+
     }
 
     function GetMap() {
@@ -157,17 +161,19 @@
 
     function ViewModel() {
         var that = this;
-        this.searchQuery = ko.observable("atrakcje turystyczne");
+        this.searchQuery = ko.observable("");
+        this.searchHowMany = ko.observable("30");
         this.searchWhere = ko.observable("wrocław");
         this.getMap = function () {
             map.entities.clear();
             pinInfobox.setOptions({ visible: false });
             var query = that.searchQuery();
             var where = that.searchWhere();
+            var howMany = that.searchHowMany();
             map.entities.push(infoboxLayer);
             //var searchManager = new Microsoft.Maps.Search.SearchManager(map);
             //searchManager.search({ what: query, where: where, count: 50, callback: geocodeCallback });
-            $.post("/Home/FindLocations", { query: query, near: where }, function (result) {
+            $.post("/Home/FindLocations", { query: query, near: where, howMany: howMany }, function (result) {
                 locations = result;
                 drawLocations(result.locations);
             });
@@ -177,9 +183,9 @@
         }
     }
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         GetMap();
         ko.applyBindings(new ViewModel());
-        
+
     });
 </script>

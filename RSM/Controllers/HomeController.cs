@@ -23,8 +23,8 @@ using Newtonsoft.Json;
 using RestSharp;
 using RestSharp.Deserializers;
 using RSM.Models;
-using RSM.Models.BingMapsRESTService.Common.JSON;
-using RSM.Models.Foursquare;
+using BingMaps = RSM.Models.BingMapsRESTService.Common.JSON;
+using Foursquare = RSM.Models.Foursquare;
 using Response = RSM.Models.BingMapsRESTService.Common.JSON.Response;
 
 namespace RSM.Controllers
@@ -32,67 +32,11 @@ namespace RSM.Controllers
     public class HomeController : Controller
     {
 
-        public class RsmDbContext : DbContext
-        {
-            public DbSet<DataSet> DataSets { get; set; }
-            public DbSet<Location> Locations { get; set; }
-            public DbSet<LocationRoute> LocationRoutes { get; set; }
-        }
+        
 
         public ActionResult Index()
         {
             return View();
-        }
-
-        public class DataSet
-        {
-            public long Id { get; set; }
-            public List<Location> Locations { get; set; }
-            public List<LocationRoute> Routes { get; set; }
-        }
-
-        public class Location
-        {
-            public long Id { get; set; }
-            public string ForsquareId { get; set; }
-            public double Latitude { get; set; }
-            public double Longitude { get; set; }
-            public string Name { get; set; }
-            public float Rate { get; set; }
-            public string Address { get; set; }
-            public string Category { get; set; }
-
-            public string LocationAsString()
-            {
-                return Latitude.ToString(CultureInfo.InvariantCulture.NumberFormat) + "," + Longitude.ToString(CultureInfo.InvariantCulture.NumberFormat);
-            }
-        }
-
-        public class LocationRoute
-        {
-            public long Id { get; set; }
-            public Location LocA { get; set; }
-            public Location LocB { get; set; }
-           public double DurationInSeconds { get; set; }
-
-            public string DurationAsString
-            {
-                get
-                {
-                    var t = TimeSpan.FromSeconds(DurationInSeconds);
-                    return string.Format("{0:D2} hours and {1:D2} minutes",
-                            t.Hours,
-                            t.Minutes);
-                }
-            }
-
-            public double DurationInHours
-            {
-                get { return DurationInSeconds/3600; }
-            }
-
-            public double Distance { get; set; }
-
         }
 
         public async Task<ActionResult> SaveDataSet(string locations)
@@ -105,39 +49,47 @@ namespace RSM.Controllers
             using (var db = new RsmDbContext())
             {
                 db.DataSets.Add(dataSet);
-                //db.BulkInsert(new List<DataSet>(){dataSet});
                 db.SaveChanges();
             }
 
             return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
 
-        public async Task<ActionResult> FindLocations(string query, string near, int offset = 0)
+        public async Task<ActionResult> FindLocations(string query, string near, int howMany = 30)
         {
             var client = new RestClient("https://api.foursquare.com");
             var request = new RestRequest("v2/venues/explore");
-            request.AddParameter("v", "20150509");
-            request.AddParameter("client_secret", "I1RXVY3TW24ZP2TXBYQPSS1Z4DC3N4XZKFXNXIAAEQVRN3GA");
-            request.AddParameter("client_id", "WNMRUNEAENC5QS1C2FHVBZTO3TSY2TLOCQFSMOKCHHC3TO12");
-            request.AddParameter("client_id", "WNMRUNEAENC5QS1C2FHVBZTO3TSY2TLOCQFSMOKCHHC3TO12");
-            request.AddParameter("near", near);
-            request.AddParameter("query", query);
-            request.AddParameter("offset", offset);
-
-            var response = await client.ExecuteGetTaskAsync(request);
-            var fResponse = JsonConvert.DeserializeObject<FoursquareResponse>(response.Content);
-            var locations = fResponse.response.groups.First().items.Select(item => new Location()
+            var result = new List<Location>();
+            for (var offset = 0; offset < howMany; offset += 30)
             {
-                ForsquareId = item.venue.id,
-                Latitude = item.venue.location.lat,
-                Longitude = item.venue.location.lng,
-                Address = string.Join(", ", item.venue.location.formattedAddress),
-                Name = item.venue.name,
-                Rate = item.venue.rating,
-                Category = item.venue.categories.First().name
-            });
+                request.AddParameter("v", "20150509");
+                request.AddParameter("client_secret", "I1RXVY3TW24ZP2TXBYQPSS1Z4DC3N4XZKFXNXIAAEQVRN3GA");
+                request.AddParameter("client_id", "WNMRUNEAENC5QS1C2FHVBZTO3TSY2TLOCQFSMOKCHHC3TO12");
+                request.AddParameter("client_id", "WNMRUNEAENC5QS1C2FHVBZTO3TSY2TLOCQFSMOKCHHC3TO12");
+                request.AddParameter("near", near);
+                request.AddParameter("query", query);
+                request.AddParameter("offset", offset);
+            
 
-            return Json(new { locations }, JsonRequestBehavior.AllowGet);
+                var response = await client.ExecuteGetTaskAsync(request);
+                request.Parameters.Clear();
+                Foursquare.FoursquareResponse fResponse = JsonConvert.DeserializeObject<Foursquare.FoursquareResponse>(response.Content);
+            
+                var locations = fResponse.response.groups.First().items.Select(item => new Location()
+                {
+                    ForsquareId = item.venue.id,
+                    Latitude = item.venue.location.lat,
+                    Longitude = item.venue.location.lng,
+                    Address = string.Join(", ", item.venue.location.formattedAddress),
+                    Name = item.venue.name,
+                    Rate = item.venue.rating,
+                    Category = item.venue.categories.First().name
+                });
+
+                result.AddRange(locations);
+            }
+
+            return Json(new { locations = result.Take(howMany) }, JsonRequestBehavior.AllowGet);
         }
 
         public async Task<List<LocationRoute>> GetRoutesBing(IEnumerable<Location> locations)
@@ -194,7 +146,7 @@ namespace RSM.Controllers
                 {
                     var obj = ser.ReadObject(str) as Response;
 
-                    var routeResponse = (Route)obj.ResourceSets.FirstOrDefault().Resources.FirstOrDefault();
+                    var routeResponse = (BingMaps.Route)obj.ResourceSets.FirstOrDefault().Resources.FirstOrDefault();
 
                     routes[i].Distance = routeResponse.TravelDistance;
                     routes[i].DurationInSeconds = routeResponse.TravelDuration;

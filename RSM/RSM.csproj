@@ -161,8 +161,12 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\DataSet.cs" />
     <Compile Include="Models\FoursquareResponse.cs" />
+    <Compile Include="Models\Location.cs" />
+    <Compile Include="Models\LocationRoute.cs" />
     <Compile Include="Models\Response.cs" />
+    <Compile Include="Models\RsmDbContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
