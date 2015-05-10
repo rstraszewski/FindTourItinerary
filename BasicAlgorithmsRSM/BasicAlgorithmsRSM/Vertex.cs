@@ -8,14 +8,14 @@ namespace BasicAlgorithmsRSM
 {
     class Vertex
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public double Score { get; set; }
         public long Duration { get; set; }
         public bool Visited { get; set; }
         public List<Vertex> ConnectedVertices = new List<Vertex>();
         public List<Edge> ConnectedEdges = new List<Edge>(); 
 
-        public Vertex(int id=0, long duration=0, double score=0)
+        public Vertex(long id=0, long duration=0, double score=0)
         {
             this.Id = id;
             this.Duration = duration;

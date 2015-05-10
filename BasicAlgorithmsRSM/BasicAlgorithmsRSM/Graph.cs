@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RSM.Models;
 
 namespace BasicAlgorithmsRSM
 {
@@ -19,21 +20,20 @@ namespace BasicAlgorithmsRSM
             NumberOfVertices = 0;
             NumberOfEdges = 0;
         }
-        public Graph(List<DistanceFromMap> listOfLocations)
+        public Graph(DataSet dataSet)
         {
             NumberOfVertices = 0;
             NumberOfEdges = 0;
             var rnd = new Random();
-            var size = listOfLocations.Count;
-            foreach (var path in listOfLocations)
+            foreach (var path in dataSet.Routes)
             {
-                var v1 = Vertices.Any(item => item.Id == path.PositionA) ? Vertices.Find(item => item.Id == path.PositionA) : AddVertex(path.PositionA, rnd.Next(1, 100), rnd.Next(1, 10));
-                var v2 = Vertices.Any(item => item.Id == path.PositionB) ? Vertices.Find(item => item.Id == path.PositionB) : AddVertex(path.PositionB, rnd.Next(1, 100), rnd.Next(1, 10));
-                var e = AddEdge(v1, v2, path.Time, path.Distance);
+                var v1 = Vertices.Any(item => item.Id == path.LocA.Id) ? Vertices.Find(item => item.Id == path.LocA.Id) : AddVertex(path.LocA.Id, rnd.Next(1, 10000), path.LocA.Rate);
+                var v2 = Vertices.Any(item => item.Id == path.LocB.Id) ? Vertices.Find(item => item.Id == path.LocB.Id) : AddVertex(path.LocB.Id, rnd.Next(1, 10000), path.LocB.Rate);
+                var e = AddEdge(v1, v2, path.DurationInSeconds, path.Distance);
             }
         }
 
-        public Vertex AddVertex(int id=0, long duration=0, double score=0)
+        public Vertex AddVertex(long id=0, long duration=0, double score=0)
         {
             var v = new Vertex(id, duration, score);
             Vertices.Add(v);
@@ -41,7 +41,7 @@ namespace BasicAlgorithmsRSM
             return v;
         }
 
-        public Edge AddEdge(Vertex vertex1, Vertex vertex2, long duration = 0, long distance = 0)
+        public Edge AddEdge(Vertex vertex1, Vertex vertex2, double duration = 0, double distance = 0)
         {
             Edge e;
             if ((e = Edges.Find(edg => edg.Vertices.Contains(vertex1) && edg.Vertices.Contains(vertex2))) != null) return e;

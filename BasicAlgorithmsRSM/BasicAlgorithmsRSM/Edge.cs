@@ -8,8 +8,8 @@ namespace BasicAlgorithmsRSM
 {
     class Edge
     {
-        public long Distance { get; set; }
-        public long Duration { get; set; }
+        public double Distance { get; set; }
+        public double Duration { get; set; }
         public double PheromonIntensity { get; set; }
 
         public List<Vertex> Vertices;
@@ -19,7 +19,7 @@ namespace BasicAlgorithmsRSM
             Vertices = new List<Vertex>();
         }
 
-        public Edge(Vertex vertex1, Vertex vertex2, long duration=0, long distance=0)
+        public Edge(Vertex vertex1, Vertex vertex2, double duration = 0, double distance = 0)
         {
             Vertices = new List<Vertex>();
 

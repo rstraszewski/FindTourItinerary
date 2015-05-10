@@ -18,7 +18,7 @@ namespace BasicAlgorithmsRSM
         {
             Console.WriteLine("---PATH---");
             Vertex lastVertex = null;
-            long time = 0;
+            double time = 0;
             foreach (var vertex in VerticesSequence)
             {
                 if (lastVertex != null)

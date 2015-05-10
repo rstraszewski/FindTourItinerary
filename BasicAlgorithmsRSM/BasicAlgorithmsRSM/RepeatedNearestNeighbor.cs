@@ -41,14 +41,14 @@ namespace BasicAlgorithmsRSM
             return _result;
         }
 
-        private void FindBestPathFrom(GraphsPath path, long totalTime)
+        private void FindBestPathFrom(GraphsPath path, double totalTime)
         {
             Vertex startVertex = path.VerticesSequence.Last();
             startVertex.Visited = true;
 
             Vertex bestVertex = null;
             double bestScore = 0;
-            var bestTime = long.MaxValue;
+            var bestTime = double.MaxValue;
 
             foreach (var connectedVertex in startVertex.ConnectedVertices.Where(v => v.Visited == false))
             {
