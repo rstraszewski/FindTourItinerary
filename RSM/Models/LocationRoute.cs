@@ -5,8 +5,8 @@ namespace RSM.Models
     public class LocationRoute
     {
         public long Id { get; set; }
-        public Location LocA { get; set; }
-        public Location LocB { get; set; }
+        public virtual Location LocA { get; set; }
+        public virtual Location LocB { get; set; }
         public double DurationInSeconds { get; set; }
 
         public string DurationAsString
