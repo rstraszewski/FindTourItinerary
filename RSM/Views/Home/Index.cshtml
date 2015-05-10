@@ -12,10 +12,10 @@
     <div class="col-md-2 input-group">
         <input data-bind="value: searchHowMany" class="form-control input-lg" />
     </div>
-    <div class="col-md-2">
+    <div class="col-md-1">
         <button class="btn btn-lg btn-primary" data-bind="click: getMap">Search</button>
     </div>
-    <div class="col-md-2">
+    <div class="col-md-1">
         <button class="btn btn-lg btn-primary" data-bind="click: saveLocations">Save</button>
     </div>
 </div>
@@ -33,6 +33,9 @@
     var map = null;
     var pinInfobox = null;
     var infoboxLayer = new Microsoft.Maps.EntityCollection();
+    infoboxLayer.setOptions({zIndex: 3});
+    var pinLayer = new Microsoft.Maps.EntityCollection();
+    var linesLayer = new Microsoft.Maps.EntityCollection();
     var directionsManager = null;
     var query = "atrakcje turystyczne";
     var locations = null;
@@ -64,7 +67,6 @@
             directionsManager.setRequestOptions({ routeMode: Microsoft.Maps.Directions.RouteMode.walking });
             var first = new Microsoft.Maps.Directions.Waypoint({ location: locs[0] });
             directionsManager.addWaypoint(first);
-
             var second = new Microsoft.Maps.Directions.Waypoint({ location: locs[1] });
             directionsManager.addWaypoint(second);
             directionsManager.calculateDirections();
@@ -75,7 +77,7 @@
 
     function blueLine(e) {
         if (e.targetType === "polyline") {
-            e.target.setOptions({ strokeColor: new Microsoft.Maps.Color(255, 0, 0, 255) });
+            e.target.setOptions({ strokeColor: new Microsoft.Maps.Color(255, 0, 0, 255), zIndex: 10000 });
         }
     }
 
@@ -86,7 +88,7 @@
     }
 
 
-    function geocodeCallback(geocodeResult, userData) {
+   /* function geocodeCallback(geocodeResult, userData) {
         locations = geocodeResult.searchResults.map(function (elem) {
             return {
                 latitude: elem.location.latitude,
@@ -98,7 +100,7 @@
         geocodeResult.searchResults.forEach(function (elem, index) {
             var pin = new Microsoft.Maps.Pushpin(elem.location);
             pin.Title = elem.name;
-            pin.Description = elem.address + " " + elem.city + ", Grade: " + 10;
+            pin.Description = elem.address + " " + elem.city + ", Category: " + 10 + ", Grade: " + 10;
             map.entities.push(pin);
             Microsoft.Maps.Events.addHandler(pin, "click", displayInfobox);
 
@@ -106,7 +108,7 @@
                 var lineVertices = new Array(elem.location, elemInner.location);
                 var line = new Microsoft.Maps.Polyline(lineVertices);
                 line.Title = "Route from \"" + elem.name + "\" to \"" + elemInner.name + "\"";
-                line.Description = "Distance: " + "2,7 km" + ", Duration: " + "32 min";
+                //line.Description = "Distance: " + "2,7 km" + ", Duration: " + "32 min" + ", Duration: " + "32 min";
                 map.entities.push(line);
                 Microsoft.Maps.Events.addHandler(line, "click", displayInfobox);
                 Microsoft.Maps.Events.addHandler(line, "mouseover", blueLine);
@@ -114,7 +116,7 @@
             });
 
         });
-    }
+    }*/
 
     function drawLocations(locations) {
         map.setView({ center: new Microsoft.Maps.Location(locations[0].Latitude, locations[0].Longitude), zoom: 13 });
@@ -122,11 +124,12 @@
             var elemLocation = new Microsoft.Maps.Location(elem.Latitude, elem.Longitude);
             var pin = new Microsoft.Maps.Pushpin(elemLocation);
             pin.Title = elem.Name;
-            pin.Description = elem.Address + ", Rate: " + elem.Rate;
-            map.entities.push(pin);
+            pin.Description = elem.Address + ", Category: " + elem.Category + ", Rate: " + elem.Rate;
+            pinLayer.push(pin);
+            //pinLayer.setOptions({ zIndex: 2 });
             Microsoft.Maps.Events.addHandler(pin, "click", displayInfobox);
 
-            locations.forEach(function (elemInner, indexInner) {
+            /*locations.forEach(function (elemInner, indexInner) {
                 var elemInnerLocation = new Microsoft.Maps.Location(elemInner.Latitude, elemInner.Longitude);
                 var lineVertices = new Array(elemLocation, elemInnerLocation);
                 var line = new Microsoft.Maps.Polyline(lineVertices);
@@ -136,9 +139,33 @@
                 Microsoft.Maps.Events.addHandler(line, "click", displayInfobox);
                 Microsoft.Maps.Events.addHandler(line, "mouseover", blueLine);
                 Microsoft.Maps.Events.addHandler(line, "mouseout", redLine);
+            });*/
+
+        });
+        drawLines(locations);
+        map.entities.push(pinLayer);
+        
+    }
+
+    function drawLines(locations) {
+        locations.forEach(function (elem, index) {
+            var elemLocation = new Microsoft.Maps.Location(elem.Latitude, elem.Longitude);
+            locations.forEach(function (elemInner, indexInner) {
+                var elemInnerLocation = new Microsoft.Maps.Location(elemInner.Latitude, elemInner.Longitude);
+                var lineVertices = new Array(elemLocation, elemInnerLocation);
+                var line = new Microsoft.Maps.Polyline(lineVertices);
+                line.Title = "Route from \"" + elem.Name + "\" to \"" + elemInner.Name + "\"";
+                line.Description = "Distance: " + "2,7 km" + ", Duration: " + "32 min";
+                //map.entities.push(line);
+                linesLayer.push(line);
+                linesLayer.setOptions({ zIndex: 0, visible: true });
+                Microsoft.Maps.Events.addHandler(line, "click", displayInfobox);
+                Microsoft.Maps.Events.addHandler(line, "mouseover", blueLine);
+                Microsoft.Maps.Events.addHandler(line, "mouseout", redLine);
             });
 
         });
+        map.entities.push(linesLayer);
     }
 
     function searchModuleLoaded() {

@@ -229,7 +229,6 @@
     <TypeScriptCompile Include="Scripts\typings\bingmaps\Microsoft.Maps.Themes.BingTheme.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\bingmaps\Microsoft.Maps.Traffic.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\bingmaps\Microsoft.Maps.VenueMaps.d.ts" />
-    <TypeScriptCompile Include="Scripts\typings\knockout.es5\knockout.es5.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\knockout\knockout.d.ts" />
   </ItemGroup>
   <PropertyGroup>
