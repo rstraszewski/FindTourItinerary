@@ -104,8 +104,8 @@ namespace RSM.Controllers
 
             using (var db = new RsmDbContext())
             {
-                //db.DataSets.Add(dataSet);
-                db.BulkInsert(new List<DataSet>(){dataSet});
+                db.DataSets.Add(dataSet);
+                //db.BulkInsert(new List<DataSet>(){dataSet});
                 db.SaveChanges();
             }
 
