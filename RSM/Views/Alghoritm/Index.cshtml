@@ -1,0 +1,60 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+@model List<RSM.Entities.DataSet>
+
+<div class="row">
+    <div class="col-md-6">
+        @(Html.Kendo().DropDownList()
+              .BindTo(ViewBag.DataSet)
+              .Name("dataSet")
+              .DataValueField("Id")
+              .DataTextField("Name")
+              .HtmlAttributes(new {data_bind = "value: dataSetId", style = "width:100%;"}))
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-3">
+        <input type="checkbox" data-bind="checked: simmulatedAnnealingChecked"/>Simmulated annealing
+    </div>
+    <div class="col-md-3">
+
+        <input type="checkbox" data-bind="checked: antChecked"/>Ant alghoritm
+    </div>
+
+    <div class="col-md-3">
+
+        <input type="checkbox" data-bind="checked: nearestNeigbourChecked"/>NN
+    </div>
+
+    <div class="col-md-3">
+
+        <button class="btn" data-bind="click: runAlghoritms">Run Alghoritms</button>
+    </div>
+</div>
+
+<script>
+    function ViewModel() {
+        var that = this;
+        this.dataSetId = ko.observable(null);
+        this.simmulatedAnnealingChecked = ko.observable(false);
+        this.antChecked = ko.observable(false);
+        this.nearestNeigbourChecked = ko.observable(false);
+        this.runAlghoritms = function() {
+            var dataSetId = that.dataSetId();
+            var sa = that.simmulatedAnnealingChecked();
+            var a = that.antChecked();
+            var nn = that.nearestNeigbourChecked();
+            $.post("/Alghoritm/Run", { dataSetId: $("#dataSet").data("kendoDropDownList").value(), isAntChecked: a, isNnChecked: nn, isSaChecked: sa });
+        }
+    }
+
+    var model;
+    $(document).ready(function() {
+        model = new ViewModel();
+        ko.applyBindings(model);
+    });
+</script>

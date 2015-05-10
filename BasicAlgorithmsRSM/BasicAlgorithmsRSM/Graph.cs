@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using RSM.Models;
-
+using RSM.Entities;
 namespace BasicAlgorithmsRSM
 {
-    class Graph
+    public class Graph
     {
         public int NumberOfVertices { get; set; }
         public int NumberOfEdges { get; set; }

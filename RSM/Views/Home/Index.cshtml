@@ -15,6 +15,12 @@
     <div class="col-md-1">
         <button class="btn btn-lg btn-primary" data-bind="click: getMap">Search</button>
     </div>
+</div>
+<div class="row">
+    <div class="col-md-2"><label>Data set name:</label></div>
+    <div class="col-md-2 input-group">
+        <input data-bind="value: dataSetName" class="form-control input-lg"/>
+    </div>
     <div class="col-md-1">
         <button class="btn btn-lg btn-primary" data-bind="click: saveLocations">Save</button>
     </div>
@@ -191,8 +197,11 @@
         this.searchQuery = ko.observable("");
         this.searchHowMany = ko.observable("30");
         this.searchWhere = ko.observable("wrocław");
+        this.dataSetName = ko.observable("");
         this.getMap = function () {
             map.entities.clear();
+            pinLayer.clear();
+            linesLayer.clear();
             pinInfobox.setOptions({ visible: false });
             var query = that.searchQuery();
             var where = that.searchWhere();
@@ -201,12 +210,15 @@
             //var searchManager = new Microsoft.Maps.Search.SearchManager(map);
             //searchManager.search({ what: query, where: where, count: 50, callback: geocodeCallback });
             $.post("/Home/FindLocations", { query: query, near: where, howMany: howMany }, function (result) {
+                debugger;
                 locations = result;
                 drawLocations(result.locations);
             });
         }
         this.saveLocations = function () {
-            $.post("/Home/SaveDataSet", { locations: JSON.stringify(locations.locations) });
+            var where = that.searchWhere();
+            var name = that.dataSetName();
+            $.post("/Home/SaveDataSet", { locations: JSON.stringify(locations.locations), where: where, dataSetName: name });
         }
     }
 

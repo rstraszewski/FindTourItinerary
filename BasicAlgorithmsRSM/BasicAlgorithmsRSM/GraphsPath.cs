@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BasicAlgorithmsRSM
 {
-    class GraphsPath
+    public class GraphsPath
     {
         public List<Vertex> VerticesSequence = new List<Vertex>();
 

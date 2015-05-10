@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RSM", "RSM\RSM.csproj", "{3AD904CD-C0B6-47BD-BE9D-0F506F021292}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicAlgorithmsRSM", "BasicAlgorithmsRSM\BasicAlgorithmsRSM\BasicAlgorithmsRSM.csproj", "{CFC16801-9BAB-4698-AEBF-97479DCBE12D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entities", "Entities\Entities.csproj", "{44B7DA2B-BA4D-46FF-9063-963A4B7A200A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{CFC16801-9BAB-4698-AEBF-97479DCBE12D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CFC16801-9BAB-4698-AEBF-97479DCBE12D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CFC16801-9BAB-4698-AEBF-97479DCBE12D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44B7DA2B-BA4D-46FF-9063-963A4B7A200A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44B7DA2B-BA4D-46FF-9063-963A4B7A200A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44B7DA2B-BA4D-46FF-9063-963A4B7A200A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44B7DA2B-BA4D-46FF-9063-963A4B7A200A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

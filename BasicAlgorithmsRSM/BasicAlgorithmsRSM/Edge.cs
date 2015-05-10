@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BasicAlgorithmsRSM
 {
-    class Edge
+    public class Edge
     {
         public double Distance { get; set; }
         public double Duration { get; set; }

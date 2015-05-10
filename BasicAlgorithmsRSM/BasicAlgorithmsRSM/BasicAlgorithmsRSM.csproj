@@ -59,9 +59,9 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\RSM\RSM.csproj">
-      <Project>{3ad904cd-c0b6-47bd-be9d-0f506f021292}</Project>
-      <Name>RSM</Name>
+    <ProjectReference Include="..\..\Entities\Entities.csproj">
+      <Project>{44b7da2b-ba4d-46ff-9063-963a4b7a200a}</Project>
+      <Name>Entities</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

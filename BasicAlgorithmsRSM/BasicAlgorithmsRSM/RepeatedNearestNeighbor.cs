@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BasicAlgorithmsRSM
 {
-    class RepeatedNearestNeighbor : IAlgorithm
+    public class RepeatedNearestNeighbor : IAlgorithm
     {
         readonly Graph _graph;
         readonly long _timeConstrain;

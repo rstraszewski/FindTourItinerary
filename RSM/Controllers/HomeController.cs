@@ -22,6 +22,7 @@ using GoogleMapsApi.Entities.PlacesDetails.Response;
 using Newtonsoft.Json;
 using RestSharp;
 using RestSharp.Deserializers;
+using RSM.Entities;
 using RSM.Models;
 using BingMaps = RSM.Models.BingMapsRESTService.Common.JSON;
 using Foursquare = RSM.Models.Foursquare;
@@ -39,12 +40,12 @@ namespace RSM.Controllers
             return View();
         }
 
-        public async Task<ActionResult> SaveDataSet(string locations)
+        public async Task<ActionResult> SaveDataSet(string locations, string where, string dataSetName)
         {
             var locationList = JsonConvert.DeserializeObject<List<Location>>(locations);
             var routes = await GetRoutesBing(locationList);
 
-            var dataSet = new DataSet() {Locations = locationList, Routes = routes};
+            var dataSet = new DataSet() {Locations = locationList, Routes = routes, Place = where, Name = dataSetName};
 
             using (var db = new RsmDbContext())
             {

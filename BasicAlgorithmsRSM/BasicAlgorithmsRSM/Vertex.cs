@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BasicAlgorithmsRSM
 {
-    class Vertex
+    public class Vertex
     {
         public long Id { get; set; }
         public double Score { get; set; }
