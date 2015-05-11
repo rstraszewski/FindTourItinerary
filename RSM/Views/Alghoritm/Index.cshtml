@@ -36,7 +36,59 @@
     </div>
 </div>
 
+
+<div class="row">
+    <div id="mapDiv" style="height: 800px; position: relative;"></div>
+</div>
+<script type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0&mkt=pl-pl"></script>
+
 <script>
+
+    ////////MAP/////////
+    var pinLayer = new Microsoft.Maps.EntityCollection();
+    var linesLayer = new Microsoft.Maps.EntityCollection();
+    var map = null;
+
+    function GetMap() {
+        map = new Microsoft.Maps.Map(document.getElementById("mapDiv"), {
+            credentials: "AuM7che94B5gbSaSIvcb7kXrr_tW7ZMq81q_rfaZibeZtXakscM4u-WP9OB7K58V",
+            center: new Microsoft.Maps.Location(51.110251, 17.036105),
+            zoom: 13
+        });
+    }
+
+    function drawLocations(locations) {
+        map.setView({ center: new Microsoft.Maps.Location(locations[0].Latitude, locations[0].Longitude), zoom: 13 });
+        locations.forEach(function(elem, index) {
+            var elemLocation = new Microsoft.Maps.Location(elem.Latitude, elem.Longitude);
+            var pin = new Microsoft.Maps.Pushpin(elemLocation);
+            pin.Title = elem.Name;
+            pin.Description = elem.Address + ", Category: " + elem.Category + ", Rate: " + elem.Rate;
+            pinLayer.push(pin);
+        });
+        drawLines(locations);
+        map.entities.push(pinLayer);
+
+    }
+
+    function drawLines(locations) {
+        locations.forEach(function(elem, index) {
+            var elemLocation = new Microsoft.Maps.Location(elem.Latitude, elem.Longitude);
+            var elemInner = locations[index + 1];
+            if (elemInner) {
+                var elemInnerLocation = new Microsoft.Maps.Location(elemInner.Latitude, elemInner.Longitude);
+                var lineVertices = new Array(elemLocation, elemInnerLocation);
+                var line = new Microsoft.Maps.Polyline(lineVertices);
+                linesLayer.push(line);
+            }
+
+        });
+        map.entities.push(linesLayer);
+    }
+
+
+    //////////////////
+
     function ViewModel() {
         var that = this;
         this.dataSetId = ko.observable(null);
@@ -44,17 +96,23 @@
         this.antChecked = ko.observable(false);
         this.nearestNeigbourChecked = ko.observable(false);
         this.runAlghoritms = function() {
-            var dataSetId = that.dataSetId();
             var sa = that.simmulatedAnnealingChecked();
             var a = that.antChecked();
             var nn = that.nearestNeigbourChecked();
-            $.post("/Alghoritm/Run", { dataSetId: $("#dataSet").data("kendoDropDownList").value(), isAntChecked: a, isNnChecked: nn, isSaChecked: sa });
-        }
+            $.post("/Alghoritm/Run", { dataSetId: $("#dataSet").data("kendoDropDownList").value(), isAntChecked: a, isNnChecked: nn, isSaChecked: sa }, function(result) {
+                map.entities.clear();
+                pinLayer.clear();
+                linesLayer.clear();
+                locs = result;
+                drawLocations(result.locations);
+            });
+        };
     }
 
     var model;
     $(document).ready(function() {
         model = new ViewModel();
         ko.applyBindings(model);
+        GetMap();
     });
 </script>

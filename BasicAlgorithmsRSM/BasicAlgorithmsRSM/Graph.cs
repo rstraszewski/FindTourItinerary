@@ -59,6 +59,17 @@ namespace BasicAlgorithmsRSM
             return Edges.Find(edge => edge.Vertices.Contains(vertex1) && edge.Vertices.Contains(vertex2));
         }
 
+        public double GetEdgeDuration(Vertex vertex1, Vertex vertex2)
+        {
+            if (vertex1 != null && vertex2 != null)
+            {
+                var edge = Edges.Find(e => e.Vertices.Contains(vertex1) && e.Vertices.Contains(vertex2));
+                return edge.Duration;
+            }
+
+            return 0;
+        }
+
         public void TurnAllVerticesToNotVisited()
         {
             foreach (var vertex in Vertices)

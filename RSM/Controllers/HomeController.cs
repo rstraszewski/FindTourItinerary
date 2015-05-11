@@ -49,6 +49,7 @@ namespace RSM.Controllers
 
             using (var db = new RsmDbContext())
             {
+                //db.BulkInsert(dataSet.Routes);
                 db.DataSets.Add(dataSet);
                 db.SaveChanges();
             }

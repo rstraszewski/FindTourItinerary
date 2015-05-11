@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BasicAlgorithmsRSM
 {
-    public class Vertex
+    public class Vertex : IEquatable<Vertex>
     {
         public long Id { get; set; }
         public double Score { get; set; }
@@ -35,6 +35,11 @@ namespace BasicAlgorithmsRSM
             return ConnectedVertices.Any(v => v.Equals(vertex))
                 ? ConnectedEdges.Find(e => e.Vertices.Contains(vertex))
                 : null;
+        }
+
+        public bool Equals(Vertex other)
+        {
+            return Id == other.Id;
         }
     }
 }

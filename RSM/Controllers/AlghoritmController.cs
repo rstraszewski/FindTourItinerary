@@ -35,9 +35,28 @@ namespace RSM.Controllers
             {
                 var dataSet = dbContext.DataSets.Find(dataSetId);
                 var graph = new Graph(dataSet);
-                var alg = new RepeatedNearestNeighbor(graph, 150);
-                var result = alg.Performe();
+                if (isNnChecked)
+                {
+                    var alg = new RepeatedNearestNeighbor(graph, 15000);
+                    var result = alg.Performe();
+                    var ids = result.VerticesSequence.Select(v => v.Id);
+                    var locations = dbContext.Locations.Where(loc => ids.Contains(loc.Id)).ToList();
+                    return Json(new { locations });
+                }
 
+                if (isAntChecked)
+                {
+                    
+                }
+
+                if (isSaChecked)
+                {
+                    var saAlg = new SimulatedAnnealing(graph, 15000);
+                    var resultSa = saAlg.Performe(5000);
+                    var ids = resultSa.VerticesSequence.Select(v => v.Id);
+                    var locations = dbContext.Locations.Where(loc => ids.Contains(loc.Id)).ToList();
+                    return Json(new {locations});
+                }
             }
             return Json("");
         }

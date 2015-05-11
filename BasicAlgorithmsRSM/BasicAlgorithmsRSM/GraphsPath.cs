@@ -14,6 +14,30 @@ namespace BasicAlgorithmsRSM
         {
             return VerticesSequence.Sum(vertex => vertex.Score);
         }
+
+        public double Score
+        {
+            get
+            {
+                return VerticesSequence.Sum(vertex => vertex.Score);
+            }
+        }
+
+        public double Duration
+        {
+            get
+            {
+                var duration = 0d;
+                VerticesSequence.Aggregate((current, next) =>
+                {
+                    duration += GetEdgeDuration(current, next);
+                    return next;
+                });
+
+                return duration;
+            }
+        }
+
         public void Show()
         {
             Console.WriteLine("---PATH---");
@@ -32,6 +56,17 @@ namespace BasicAlgorithmsRSM
 
             }
             Console.WriteLine("---SCORE: " + SumScore() + " TOTAL TIME: " + time + "---");
+        }
+
+        public double GetEdgeDuration(Vertex vertex1, Vertex vertex2)
+        {
+            if (vertex1 != null && vertex2 != null)
+            {
+                var edge = vertex1.ConnectedEdges.Find(e => e.Vertices.Contains(vertex1) && e.Vertices.Contains(vertex2));
+                return edge.Duration;
+            }
+
+            return 0;
         }
     }
 }
