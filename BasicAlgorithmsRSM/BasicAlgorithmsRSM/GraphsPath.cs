@@ -28,6 +28,10 @@ namespace BasicAlgorithmsRSM
             get
             {
                 var duration = 0d;
+                if (VerticesSequence.Count == 0)
+                {
+                    return double.MaxValue;
+                }
                 VerticesSequence.Aggregate((current, next) =>
                 {
                     duration += GetEdgeDuration(current, next);
@@ -36,6 +40,25 @@ namespace BasicAlgorithmsRSM
 
                 return duration;
             }
+        }
+
+        public GraphsPath GetPartWithinLimit(double limit)
+        {
+            var path = new GraphsPath();
+            var duration = 0d;
+            Vertex lastVertex = null;
+            for (var i = 0; i < VerticesSequence.Count; i++)
+            {
+                var vertex = VerticesSequence[i];
+                duration += GetEdgeDuration(lastVertex, vertex);
+                if (duration > limit)
+                {
+                    break;
+                }
+                path.VerticesSequence.Add(vertex);
+            }
+
+            return path;
         }
 
         public void Show()
