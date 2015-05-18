@@ -10,16 +10,14 @@ namespace BasicAlgorithmsRSM
     {
         public Graph Graph { get; private set; }
         public double TimeConstrain { get; private set; }
-        public GraphsPath Result { get; private set; }
         public double Temperature { get; private set; }
         public double TemperatureStart { get; private set; }
         public SimulatedAnnealing(Graph graph, double timeConstrain)
         {
             this.Graph = graph;
             this.TimeConstrain = timeConstrain;
-            this.Result = new GraphsPath();
             Temperature = 100;
-            TemperatureStart = 100;
+            TemperatureStart = Temperature;
         }
 
         public GraphsPath Performe()
@@ -27,154 +25,82 @@ namespace BasicAlgorithmsRSM
             return Performe(1000);
         }
 
-        public GraphsPath WholePath { get; set; }
-
-         
-
-        /*public GraphsPath Performe(int numberOfIteration)
-        {
-            Random rnd = new Random();
-            for (var iter = 0; iter < numberOfIteration; iter++)
-            {
-                Temperature--;
-                var randomDouble = rnd.NextDouble();
-
-                var path = GetRandomSequance();
-                if (path.SumScore() > Result.SumScore())
-                {
-                    Result = path;
-                }
-            }
-            return Result;
-        }*/
+        public GraphsPath Result { get; set; }
 
         public GraphsPath Performe(int numberOfIteration)
         {
-            Random rnd = new Random();
-            Result = GetRandomSequance();
+            var alfa = 20;
+            var rnd = new Random();
+            Result = GetWholePathRandom();
+
             for (var iter = 0; iter < numberOfIteration; iter++)
             {
                 var randomDouble = rnd.NextDouble();
+                var numberToShuffle = (Temperature / TemperatureStart) *
+                                      Graph.NumberOfVertices * (0.5);
 
+                var path = GetNeigbourWholePath(Math.Ceiling(numberToShuffle));
+                var p = Math.Pow(Math.E, -TemperatureStart * (Result.ScoreWithinLimit(TimeConstrain) - path.ScoreWithinLimit(TimeConstrain)) / (Temperature));//rozklad normalny, peak przy 1
 
-                GraphsPath path = null;
-
-                if (Temperature < 0.001*TemperatureStart)
-                {
-                    path = GetNeigbouringSequanceChangeRandom();
-                }
-                else
-                {
-                    path = GetRandomSequance();
-                }
-                var p = Math.Pow(Math.E, -(Result.SumScore()*20 - path.SumScore()*20)/Temperature);
-
-                if (path.SumScore() > Result.SumScore())
+                if (randomDouble < p)
                 {
                     Result = path;
                 }
-                else if (randomDouble < p)
-                {
-                    if (path.Duration <= TimeConstrain)
-                    {
-                        Result = path;
-                    }
-                }
+
                 Temperature = 0.99 * Temperature;
             }
-            return Result;
+            return Result.GetPartWithinLimit(TimeConstrain);
         }
 
-        private GraphsPath GetRandomSequance()
+        private GraphsPath GetWholePathRandom()
         {
-            Vertex lastVertex = null;
             var randomIndexes = Enumerable.Range(0, Graph.NumberOfVertices).ToList();
             randomIndexes.Shuffle();
 
-            var duration = 0d;
             var path = new GraphsPath();
 
-            foreach (var i in randomIndexes)
+            for (var i = 0; i < randomIndexes.Count; i++)
             {
-                var vertex = Graph.Vertices[i];
-                
-                duration += Graph.GetEdgeDuration(lastVertex, vertex);
-                lastVertex = vertex;
-
-                if (duration >= TimeConstrain)
-                {
-                    return path;
-                }
-
+                var vertex = Graph.Vertices[randomIndexes[i]];
                 path.VerticesSequence.Add(vertex);
             }
 
             return path;
         }
 
-        private GraphsPath GetNeigbouringSequanceChangeFirstLast()
+        private GraphsPath GetNeigbourWholePath(double howMany)
         {
-            
-
-            //var duration = 0d;
-            var path = new GraphsPath();
-            path.VerticesSequence.AddRange(Result.VerticesSequence.ToList());
-
-            
             var randomIndexes = Enumerable.Range(0, Graph.NumberOfVertices).ToList();
             randomIndexes.Shuffle();
 
-            var vertex = Graph.Vertices[randomIndexes.First()];
-
-            if (!path.VerticesSequence.Contains(vertex))
-            {
-                path.VerticesSequence[0] = vertex;
-            }
-
-            vertex = Graph.Vertices[randomIndexes[1]];
-
-            if (!path.VerticesSequence.Contains(vertex))
-            {
-                path.VerticesSequence[path.VerticesSequence.Count - 1] = vertex;
-            }
-
-            if (path.Duration > TimeConstrain)
-            {
-                path.VerticesSequence.Clear();
-            }
-            return path;
-        }
-
-        private GraphsPath GetNeigbouringSequanceChangeRandom()
-        {
-            //var duration = 0d;
             var path = new GraphsPath();
-            path.VerticesSequence.AddRange(Result.VerticesSequence.ToList());
+            path.VerticesSequence.AddRange(Result.VerticesSequence);
 
 
-            var randomIndexes = Enumerable.Range(0, Graph.NumberOfVertices).ToList();
-            randomIndexes.Shuffle();
-
-            var rnd = new Random();
-
-            foreach (var i in randomIndexes)
+            if (howMany == 1)
             {
-                var vertex = Graph.Vertices[i];
-                if (!path.VerticesSequence.Contains(vertex))
+                var index = path.GetLastIndexWithinLimit(TimeConstrain);
+
+                var i = randomIndexes.First(r => r < index);
+
+                var j = randomIndexes.First(r => r != i);
+
+                var temp = path.VerticesSequence[randomIndexes[i]];
+                path.VerticesSequence[randomIndexes[i]] = path.VerticesSequence[randomIndexes[j]];
+                path.VerticesSequence[randomIndexes[j]] = temp;
+            }
+            else
+            {
+                for (var i = 0; i < howMany * 2; i += 2)
                 {
-                    var index = rnd.Next(0, path.VerticesSequence.Count);
-                    path.VerticesSequence[index] = vertex;
-                    break;
+                    var temp = path.VerticesSequence[randomIndexes[i]];
+                    path.VerticesSequence[randomIndexes[i]] = path.VerticesSequence[randomIndexes[i + 1]];
+                    path.VerticesSequence[randomIndexes[i + 1]] = temp;
                 }
             }
-
-            if (path.Duration > TimeConstrain)
-            {
-                path.VerticesSequence.Clear();
-            }
+           
             return path;
         }
-
 
     }
 

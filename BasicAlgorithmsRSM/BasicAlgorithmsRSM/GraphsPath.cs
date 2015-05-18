@@ -42,6 +42,71 @@ namespace BasicAlgorithmsRSM
             }
         }
 
+        public int GetLastIndexWithinLimit(double limit)
+        {
+            Vertex lastVertex = null;
+            var duration = 0d;
+            var index = 0;
+            for (var i = 0; i < VerticesSequence.Count; i++)
+            {
+                var vertex = VerticesSequence[i];
+                var edgeDuration = GetEdgeDuration(lastVertex, vertex);
+                if (duration + edgeDuration > limit)
+                {
+                    break;
+                }
+                lastVertex = vertex;
+                duration += edgeDuration;
+                index = i;
+            }
+
+            return index;
+        }
+
+        public double DurationWithinLimit(double limit)
+        {
+                var duration = 0d;
+                Vertex lastVertex = null;
+
+                for (var i = 0; i < VerticesSequence.Count; i++)
+                {
+                    var vertex = VerticesSequence[i];
+                    var edgeDuration = GetEdgeDuration(lastVertex, vertex);
+                    if (duration + edgeDuration > limit)
+                    {
+                        break;
+                    }
+                    lastVertex = vertex;
+                    duration += edgeDuration;
+                }
+
+                return duration;
+        }
+
+        public double ScoreWithinLimit(double limit)
+        {
+            var duration = 0d;
+            Vertex lastVertex = null;
+            var score = 0d;
+
+            for (var i = 0; i < VerticesSequence.Count; i++)
+            {
+                var vertex = VerticesSequence[i];
+                var edgeDuration = GetEdgeDuration(lastVertex, vertex);
+
+                if (duration + edgeDuration > limit)
+                {
+                    break;
+                }
+
+                lastVertex = vertex;
+                duration += edgeDuration;
+                score += vertex.Score;
+            }
+
+            return score;
+        }
+
         public GraphsPath GetPartWithinLimit(double limit)
         {
             var path = new GraphsPath();
@@ -56,6 +121,7 @@ namespace BasicAlgorithmsRSM
                     break;
                 }
                 path.VerticesSequence.Add(vertex);
+                lastVertex = vertex;
             }
 
             return path;

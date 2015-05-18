@@ -52,7 +52,7 @@ namespace RSM.Controllers
                 if (isSaChecked)
                 {
                     var saAlg = new SimulatedAnnealing(graph, 15000);
-                    var resultSa = saAlg.Performe(5000);
+                    var resultSa = saAlg.Performe(30000);
                     var ids = resultSa.VerticesSequence.Select(v => v.Id);
                     var locations = dbContext.Locations.Where(loc => ids.Contains(loc.Id)).ToList();
                     return Json(new {locations});
