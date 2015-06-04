@@ -12,7 +12,7 @@ namespace BasicAlgorithmsRSM
         public int NumberOfEdges { get; set; }
 
         public List<Vertex> Vertices = new List<Vertex>();
-        private List<Edge> Edges = new List<Edge>();
+        public List<Edge> Edges = new List<Edge>();
 
         public Graph()
         {

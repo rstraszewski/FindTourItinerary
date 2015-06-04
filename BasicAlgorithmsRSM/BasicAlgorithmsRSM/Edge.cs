@@ -36,5 +36,10 @@ namespace BasicAlgorithmsRSM
             this.Duration = duration;
             this.Distance = distance;
         }
+
+        public Vertex GetVertexOppositTo(Vertex vertex)
+        {
+            return Vertices.Find(v => !v.Equals(vertex));
+        }
     }
 }

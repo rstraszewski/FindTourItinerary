@@ -157,5 +157,10 @@ namespace BasicAlgorithmsRSM
 
             return 0;
         }
+
+        public void Add(Vertex v)
+        {
+            VerticesSequence.Add(v);
+        }
     }
 }
