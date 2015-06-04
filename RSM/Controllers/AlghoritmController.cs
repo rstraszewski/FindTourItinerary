@@ -46,7 +46,11 @@ namespace RSM.Controllers
 
                 if (isAntChecked)
                 {
-                    
+                    var alg = new AntColony(graph, 15000);
+                    var result = alg.Performe();
+                    var ids = result.VerticesSequence.Select(v => v.Id);
+                    var locations = dbContext.Locations.Where(loc => ids.Contains(loc.Id)).ToList();
+                    return Json(new { locations });
                 }
 
                 if (isSaChecked)

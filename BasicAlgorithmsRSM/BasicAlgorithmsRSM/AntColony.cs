@@ -10,12 +10,14 @@ namespace BasicAlgorithmsRSM
     {
         public Vertex CurrentPosition;
         public GraphsPath TraveledDistance;
+        public bool moving;
 
         public Ant(Vertex currentPosition)
         {
             CurrentPosition = currentPosition;
             TraveledDistance = new GraphsPath();
             TraveledDistance.Add(currentPosition);
+            moving = true;
         }
     }
     class ProbabilityChoice
@@ -26,14 +28,14 @@ namespace BasicAlgorithmsRSM
         public double minVal;
     }
 
-    class AntColony : IAlgorithm
+    public class AntColony : IAlgorithm
     {
         private Graph Graph;
         readonly long TimeConstrain;
         public GraphsPath Result { get; set; }
         public double bestScore { get; set; }
 
-        private readonly double NumberOfIterations = 10;           //t
+        private readonly double NumberOfIterations = 100;           //t
         private readonly double NumberOfAntsPerVertex = 10;       //m
         private readonly double EvaporationCoefficient = 0.9;     //ro
         private readonly double IntensityDerivative = 0.5;        //delta_tal(t, t+1)
@@ -55,15 +57,16 @@ namespace BasicAlgorithmsRSM
             for (var t = 0; t < NumberOfIterations; t++)
             {
                 PlaceingAnts();
-                var movingAnts = Ants.ToList();
-                while (movingAnts.Count != 0)
+                var movingAnts = Ants.Count;
+                while (movingAnts != 0)
                 {
-                    foreach (var ant in movingAnts)
+                    foreach (var ant in Ants.Where(a=>a.moving))
                     {
                         Vertex nextVertex;
                         if ((nextVertex = NextVertexForAnt(ant)) == null)
                         {
-                            movingAnts.Remove(ant);
+                            ant.moving = false;
+                            movingAnts--;
                             continue;
                         }
                         ant.TraveledDistance.Add(nextVertex);
@@ -80,7 +83,9 @@ namespace BasicAlgorithmsRSM
 
         private Vertex NextVertexForAnt(Ant ant)
         {
-            var vertexToCheck = ant.CurrentPosition.ConnectedVertices.Except(ant.TraveledDistance.VerticesSequence);
+            var vertexToCheck = ant.CurrentPosition.ConnectedVertices
+                .Except(ant.TraveledDistance.VerticesSequence)
+                .Where(e => ant.TraveledDistance.Duration + ant.CurrentPosition.GetEdgeTo(e).Duration <= TimeConstrain);
             if (vertexToCheck.Count() == 0)
                 return null;
 

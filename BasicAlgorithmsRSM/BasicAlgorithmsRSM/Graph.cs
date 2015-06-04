@@ -26,8 +26,8 @@ namespace BasicAlgorithmsRSM
             var rnd = new Random();
             foreach (var path in dataSet.Routes)
             {
-                var v1 = Vertices.Any(item => item.Id == path.LocA.Id) ? Vertices.Find(item => item.Id == path.LocA.Id) : AddVertex(path.LocA.Id, rnd.Next(1, 10000), path.LocA.Rate);
-                var v2 = Vertices.Any(item => item.Id == path.LocB.Id) ? Vertices.Find(item => item.Id == path.LocB.Id) : AddVertex(path.LocB.Id, rnd.Next(1, 10000), path.LocB.Rate);
+                var v1 = Vertices.Any(item => item.Id == path.LocA.Id) ? Vertices.Find(item => item.Id == path.LocA.Id) : AddVertex(path.LocA.Id, rnd.Next(1, 10000), path.LocA.Rate == 0 ? 0.001 : path.LocA.Rate);
+                var v2 = Vertices.Any(item => item.Id == path.LocB.Id) ? Vertices.Find(item => item.Id == path.LocB.Id) : AddVertex(path.LocB.Id, rnd.Next(1, 10000), path.LocB.Rate == 0 ? 0.001 : path.LocB.Rate);
                 var e = AddEdge(v1, v2, path.DurationInSeconds, path.Distance);
             }
         }

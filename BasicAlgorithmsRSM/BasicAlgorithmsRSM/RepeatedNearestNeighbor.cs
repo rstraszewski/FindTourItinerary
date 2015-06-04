@@ -28,8 +28,8 @@ namespace BasicAlgorithmsRSM
                 {
                     var path = new GraphsPath();
                     path.VerticesSequence.Add(vertex);
-                    FindBestPathFrom(path, vertex.Duration);
-                    path.Show();
+                    FindBestPathFrom(path, 0);
+                    //path.Show();
                     if (path.SumScore() > bestScore)
                     {
                         _result = path;
@@ -53,7 +53,7 @@ namespace BasicAlgorithmsRSM
             foreach (var connectedVertex in startVertex.ConnectedVertices.Where(v => v.Visited == false))
             {
                 var edge = _graph.GetEdge(startVertex, connectedVertex);
-                var timing = totalTime + connectedVertex.Duration + edge.Duration;
+                var timing = totalTime + edge.Duration;
                 var score = FactorOfAdvantage(edge, connectedVertex);
                 if ( score > bestScore && timing < _timeConstrain)
                 {
