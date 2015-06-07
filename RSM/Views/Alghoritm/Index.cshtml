@@ -85,9 +85,65 @@
             <label>Time constrain</label>
         </div>
         <div class="col-md-3">
-            <input data-bind="kendoNumericTextBox: { value: antTimeConstrain, min: 0, max: 100000, step: 1000, format: 'i' }" />
+            <input data-bind="kendoNumericTextBox: { value: antTimeConstrain, min: 0, max: 100000, step: 1000, format: 'i' }"/>
         </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <label>Number Of Iterations</label>
         </div>
+        <div class="col-md-3">
+            <input data-bind="kendoNumericTextBox: { value: antNumberOfIterations, min: 0, max: 10000, step: 100, format: 'i' }" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <label>Number Of Ants Per Vertex</label>
+        </div>
+        <div class="col-md-3">
+            <input data-bind="kendoNumericTextBox: { value: antNumberOfAntsPerVertex, min: 0, max: 100, step: 5, format: 'i' }" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <label>Evaporation Coefficient</label>
+        </div>
+        <div class="col-md-3">
+            <input data-bind="kendoNumericTextBox: { value: antEvaporationCoefficient, min: 0, max: 1, step: 0.1, format: 'n6', decimals: 6 }" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <label>Intensity Derivative</label>
+        </div>
+        <div class="col-md-3">
+            <input data-bind="kendoNumericTextBox: { value: antIntensityDerivative, min: 0, max: 1, step: 0.1, format: 'n6', decimals: 6 }" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <label>Initial Pheromon Value</label>
+        </div>
+        <div class="col-md-3">
+            <input data-bind="kendoNumericTextBox: { value: antInitialPheromonValue, min: 0, max: 1, step: 0.00001, format: 'n6', decimals: 6 }" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <label>Trail Importance</label>
+        </div>
+        <div class="col-md-3">
+            <input data-bind="kendoNumericTextBox: { value: antTrailImportance, min: 0, max: 1, step: 0.1, format: 'n6', decimals: 6 }" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <label>Visibility Importance</label>
+        </div>
+        <div class="col-md-3">
+            <input data-bind="kendoNumericTextBox: { value: antVisibilityImportance, min: 0, max: 1, step: 0.1, format: 'n6', decimals: 6 }" />
+        </div>
+    </div>
         <div class="row">
             <button class="btn btn-primary" data-bind="click: addAnt">Add ant colony to run</button>
         </div>
@@ -129,6 +185,13 @@
         <ul class="list-group" data-bind="foreach: antToRun">
             <li class="list-group-item">
                 Time constrain <span data-bind="text: TimeConstrain"></span>
+                Number Of Iterations <span data-bind="text: NumberOfIterations"></span>
+                Number Of Ants Per Vertex <span data-bind="text: NumberOfAntsPerVertex"></span>
+                Evaporation Coefficient <span data-bind="text: EvaporationCoefficient"></span>
+                Intensity Derivative <span data-bind="text: IntensityDerivative"></span>
+                Initial PheromonValue <span data-bind="text: InitialPheromonValue"></span>
+                Trail Importance <span data-bind="text: TrailImportance"></span>
+                Visibility Importance <span data-bind="text: VisibilityImportance"></span>
             </li>
         </ul>
     </div>
@@ -215,6 +278,13 @@
 
         /////Ant Colony parameters
         this.antTimeConstrain = ko.observable("");
+        this.antNumberOfIterations = ko.observable("");
+        this.antNumberOfAntsPerVertex = ko.observable("");
+        this.antEvaporationCoefficient = ko.observable("");
+        this.antIntensityDerivative = ko.observable("");
+        this.antInitialPheromonValue = ko.observable("");
+        this.antTrailImportance = ko.observable("");
+        this.antVisibilityImportance = ko.observable("");
         this.antToRun = ko.observableArray();
         ////
 
@@ -281,8 +351,15 @@
         //Create Ant tasks
         this.addAnt = function () {
             var time = that.antTimeConstrain();
+            var noi = that.antNumberOfIterations();
+            var noapv = that.antNumberOfAntsPerVertex();
+            var ec = that.antEvaporationCoefficient();
+            var ide = that.antIntensityDerivative();
+            var ipv = that.antInitialPheromonValue();
+            var ti = that.antTrailImportance();
+            var vi = that.antVisibilityImportance();
             var dataSet = $("#dataSet").data("kendoDropDownList").dataItem();
-            that.antToRun.push({ Id: that.antToRun().length, TimeConstrain: time, DataSet: { Name: dataSet.Name, Id: dataSet.Id } });
+            that.antToRun.push({ Id: that.antToRun().length, TimeConstrain: time, NumberOfIterations: noi, NumberOfAntsPerVertex: noapv, EvaporationCoefficient: ec, IntensityDerivative: ide, InitialPheromonValue: ipv, TrailImportance: ti, VisibilityImportance: vi, DataSet: { Name: dataSet.Name, Id: dataSet.Id } });
         };
 
         this.items = ko.observableArray();

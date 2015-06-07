@@ -30,30 +30,43 @@ namespace BasicAlgorithmsRSM
     public class AntColonyParameters
     {
         public double TimeConstrain { get; set; }
+        public double NumberOfIterations { get; set; }
+        public double NumberOfAntsPerVertex { get; set; }
+        public double EvaporationCoefficient { get; set; }
+        public double IntensityDerivative { get; set; }
+        public double InitialPheromonValue { get; set; }
+        public double TrailImportance { get; set; }
+        public double VisibilityImportance { get; set; }
 
     }
     public class AntColony : IAlgorithm
     {
-        public AntColonyParameters Parameters { get; set; }
         private Graph Graph;
-        //readonly long TimeConstrain;
         public GraphsPath Result { get; set; }
         public double bestScore { get; set; }
 
-        private readonly double NumberOfIterations = 100;           //t
-        private readonly double NumberOfAntsPerVertex = 10;       //m
-        private readonly double EvaporationCoefficient = 0.9;     //ro
-        private readonly double IntensityDerivative = 0.5;        //delta_tal(t, t+1)
-        private readonly double InitialPheromonValue = 0.00000001; //tal(0)
-        private readonly double TrailImportance = 1;               //alpha
-        private readonly double VisibilityImportance = 1;          //beta
+        private double TimeConstrain;
+        private double NumberOfIterations;// = 100;           //t
+        private double NumberOfAntsPerVertex;// = 10;       //m
+        private double EvaporationCoefficient;// = 0.9;     //ro
+        private double IntensityDerivative;// = 0.5;        //delta_tal(t, t+1)
+        private double InitialPheromonValue;// = 0.00000001; //tal(0)
+        private double TrailImportance;// = 1;               //alpha
+        private double VisibilityImportance;// = 1;          //beta
 
         private List<Ant> Ants;
 
         public AntColony(Graph graph, AntColonyParameters parameters)
         {
             this.Graph = graph;
-            Parameters = parameters;
+            this.TimeConstrain = parameters.TimeConstrain;
+            this.NumberOfIterations = parameters.NumberOfIterations != 0 ? parameters.NumberOfIterations : 100;
+            this.NumberOfAntsPerVertex = parameters.NumberOfAntsPerVertex != 0 ? parameters.NumberOfAntsPerVertex : 10;
+            this.EvaporationCoefficient = parameters.EvaporationCoefficient != 0 ? parameters.EvaporationCoefficient : 0.9;
+            this.IntensityDerivative = parameters.IntensityDerivative != 0 ? parameters.IntensityDerivative : 0.5;
+            this.InitialPheromonValue = parameters.InitialPheromonValue != 0 ? parameters.InitialPheromonValue : 0.000001;
+            this.TrailImportance = parameters.TrailImportance != 0 ? parameters.TrailImportance : 1;
+            this.VisibilityImportance = parameters.VisibilityImportance != 0 ? parameters.VisibilityImportance : 1;
         }
 
         public GraphsPath Performe()
@@ -90,7 +103,7 @@ namespace BasicAlgorithmsRSM
         {
             var vertexToCheck = ant.CurrentPosition.ConnectedVertices
                 .Except(ant.TraveledDistance.VerticesSequence)
-                .Where(e => ant.TraveledDistance.Duration + ant.CurrentPosition.GetEdgeTo(e).Duration <= Parameters.TimeConstrain);
+                .Where(e => ant.TraveledDistance.Duration + ant.CurrentPosition.GetEdgeTo(e).Duration <= TimeConstrain);
             if (vertexToCheck.Count() == 0)
                 return null;
 
