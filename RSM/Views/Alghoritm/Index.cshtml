@@ -339,28 +339,28 @@
 
 
         /////Simulated Annealing parameters
-        this.saTemperature = ko.observable("");
-        this.saTimeConstrain = ko.observable("");
-        this.saNumberOfIterations = ko.observable("");
-        this.saTemperatureAlpha = ko.observable("");
-        this.saHowMany = ko.observable("");
+        this.saTemperature = ko.observable("150");
+        this.saTimeConstrain = ko.observable("3000");
+        this.saNumberOfIterations = ko.observable("50000");
+        this.saTemperatureAlpha = ko.observable("0.99");
+        this.saHowMany = ko.observable("1");
         this.simulatedAnnealingToRun = ko.observableArray();
         ////
 
         /////Ant Colony parameters
-        this.antTimeConstrain = ko.observable("");
-        this.antNumberOfIterations = ko.observable("");
-        this.antNumberOfAntsPerVertex = ko.observable("");
-        this.antEvaporationCoefficient = ko.observable("");
-        this.antIntensityDerivative = ko.observable("");
-        this.antInitialPheromonValue = ko.observable("");
-        this.antTrailImportance = ko.observable("");
-        this.antVisibilityImportance = ko.observable("");
+        this.antTimeConstrain = ko.observable("3000");
+        this.antNumberOfIterations = ko.observable("50");
+        this.antNumberOfAntsPerVertex = ko.observable("10");
+        this.antEvaporationCoefficient = ko.observable("0.9");
+        this.antIntensityDerivative = ko.observable("0.5");
+        this.antInitialPheromonValue = ko.observable("0.00001");
+        this.antTrailImportance = ko.observable("1");
+        this.antVisibilityImportance = ko.observable("1");
         this.antToRun = ko.observableArray();
         ////
 
         /////Nearest neigbour parameters
-        this.nnTimeConstrain = ko.observable("");
+        this.nnTimeConstrain = ko.observable("3000");
         this.nnToRun = ko.observableArray();
         ////
 
