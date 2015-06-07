@@ -38,6 +38,7 @@ namespace RSM.Controllers
             public float TemperatureAlpha { get; set; }
             public double TemperatureMax { get; set; }
             public double TimeConstrain { get; set; }
+            public int HomManyTimes { get; set; }
             public int Id { get; set; }
         }
         public class AntColonyTask
@@ -61,10 +62,21 @@ namespace RSM.Controllers
         public class SimulatedAnnealingResult
         {
             public SimulatedAnnealingParameters Parameters { get; set; }
-            public List<Location> Path { get; set; }
-            public double Score { get; set; }
+            public List<List<Location>> Paths { get; set; }
+            public List<double> Scores { get; set; }
+
+            public double ScoreAvarege
+            {
+                get { return Scores.Sum() / Scores.Count; }
+            }
             public DataSetViewModel DataSet { get; set; }
             public int Id { get; set; }
+
+            public SimulatedAnnealingResult()
+            {
+                Paths = new List<List<Location>>();
+                Scores = new List<double>();
+            }
 
         }
 
@@ -83,6 +95,7 @@ namespace RSM.Controllers
             public RepeatedNearestNeighborParameters Parameters { get; set; }
             public List<Location> Path { get; set; }
             public double Score { get; set; }
+
             public DataSetViewModel DataSet { get; set; }
             public int Id { get; set; }
 
@@ -96,7 +109,7 @@ namespace RSM.Controllers
 
             public double AverageSaScore
             {
-                get { return SimulatedAnnealingResults.Count > 0 ? SimulatedAnnealingResults.Sum(e => e.Score) / SimulatedAnnealingResults.Count : 0; }
+                get { return SimulatedAnnealingResults.Count > 0 ? SimulatedAnnealingResults.Sum(e => e.ScoreAvarege) / SimulatedAnnealingResults.Count : 0; }
             }
 
             public double AverageNnScore
@@ -128,19 +141,23 @@ namespace RSM.Controllers
                     var parameters = Mapper.Map<SimulatedAnnealingParameters>(saTask);
                     var dataSet = dbContext.DataSets.Find(saTask.DataSet.Id);
                     var graph = new Graph(dataSet);
-                    var saAlg = new SimulatedAnnealing(graph, parameters);
-                    var resultSa = saAlg.Performe();
-                    var ids = resultSa.VerticesSequence.Select(v => v.Id);
-                    var locations = dbContext.Locations.Where(loc => ids.Contains(loc.Id)).ToList();
-
-                    result.SimulatedAnnealingResults.Add(new SimulatedAnnealingResult()
+                    var saResult = new SimulatedAnnealingResult()
                     {
                         Parameters = parameters,
                         DataSet = saTask.DataSet,
-                        Path = locations,
-                        Score = resultSa.Score,
                         Id = saTask.Id
-                    });
+                    };
+
+                    for (var i = 0; i < saTask.HomManyTimes; i++)
+                    {
+                        var saAlg = new SimulatedAnnealing(graph, parameters);
+                        var resultSa = saAlg.Performe();
+                        var ids = resultSa.VerticesSequence.Select(v => v.Id);
+                        var locations = dbContext.Locations.Where(loc => ids.Contains(loc.Id)).ToList();
+                        saResult.Paths.Add(locations);
+                        saResult.Scores.Add(resultSa.Score);
+                    }
+                    result.SimulatedAnnealingResults.Add(saResult);
                 }
                 if (nnTasks != null)
                 foreach (var nnTask in nnTasks)

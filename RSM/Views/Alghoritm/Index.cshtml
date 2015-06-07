@@ -70,7 +70,15 @@
             <label>Temperature change parameter</label>
         </div>
         <div class="col-md-3">
-            <input data-bind="kendoNumericTextBox: { value: saTemperatureAlpha, min: 0, max: 1, step: 0.1, format: 'n6', decimals: 6 }" />
+            <input data-bind="kendoNumericTextBox: { value: saTemperatureAlpha, min: 0, max: 1, step: 0.1, format: 'n6', decimals: 6 }"/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <label>How many times repeated</label>
+        </div>
+        <div class="col-md-3">
+            <input data-bind="kendoNumericTextBox: { value: saHowMany, min: 0, max: 1000, step: 1, format: 'i'}" />
         </div>
     </div>
     <div class="row">
@@ -118,6 +126,7 @@
                 Time constrain <span data-bind="text: TimeConstrain"></span>,
                 Temperature change parameter <span data-bind="text: TemperatureAlpha"></span>,
                 Number of iterations <span data-bind="text: NumberOfIteration"></span>,
+                How many times repeated <span data-bind="text: HomManyTimes"></span>,
                 DataSet <span data-bind="text: DataSet.Name"></span>
                 <button data-bind="click: $parent.removeSa" class="btn btn-danger">Remove</button>
                 <button data-bind="click: $parent.showSa" class="btn btn-info">Show on map</button>
@@ -217,6 +226,7 @@
         this.saTimeConstrain = ko.observable("");
         this.saNumberOfIterations = ko.observable("");
         this.saTemperatureAlpha = ko.observable("");
+        this.saHowMany = ko.observable("");
         this.simulatedAnnealingToRun = ko.observableArray();
         ////
 
@@ -242,9 +252,9 @@
                 that.saTemperatureScoreData.removeAll();
                 that.saTemperatureAlphaScoreData.removeAll();
                 $.each(result.SimulatedAnnealingResults, function (index, elem) {
-                    that.saIterationScoreData.push({ iterations: elem.Parameters.NumberOfIteration, score: elem.Score });
-                    that.saTemperatureScoreData.push({ temperature: elem.Parameters.TemperatureMax, score: elem.Score });
-                    that.saTemperatureAlphaScoreData.push({ temperatureAlpha: elem.Parameters.TemperatureAlpha, score: elem.Score });
+                    that.saIterationScoreData.push({ iterations: elem.Parameters.NumberOfIteration, score: elem.ScoreAvarege });
+                    that.saTemperatureScoreData.push({ temperature: elem.Parameters.TemperatureMax, score: elem.ScoreAvarege });
+                    that.saTemperatureAlphaScoreData.push({ temperatureAlpha: elem.Parameters.TemperatureAlpha, score: elem.ScoreAvarege });
                     
                 });
                 that.alghoritmCompareData.push({ name: 'score', value: result.AverageSaScore });
@@ -259,8 +269,10 @@
             var temp = that.saTemperature();
             var tempAlpha = that.saTemperatureAlpha();
             var iterations = that.saNumberOfIterations();
+            var howMany = that.saHowMany();
             var dataSet = $("#dataSet").data("kendoDropDownList").dataItem();
-            that.simulatedAnnealingToRun.push({ Id: that.simulatedAnnealingToRun().length, TimeConstrain: time, TemperatureMax: temp, TemperatureAlpha: tempAlpha, NumberOfIteration: iterations, DataSet: { Name: dataSet.Name, Id: dataSet.Id } });
+            debugger;
+            that.simulatedAnnealingToRun.push({ Id: that.simulatedAnnealingToRun().length, HomManyTimes: howMany, TimeConstrain: time, TemperatureMax: temp, TemperatureAlpha: tempAlpha, NumberOfIteration: iterations, DataSet: { Name: dataSet.Name, Id: dataSet.Id } });
         };
 
         this.removeSa = function(elem) {
@@ -276,7 +288,7 @@
                 map.entities.clear();
                 pinLayer.clear();
                 linesLayer.clear();
-                drawLocations(found.Path);
+                drawLocations(found.Paths[0]);
             }
         }
 
