@@ -228,6 +228,12 @@
 <div data-bind="kendoChart: { data: saIterationScoreData, title: {text: 'Simulated annealing - dependency of score on number of iterations'}, yAxis: {title: {text: 'Score'}}, xAxis: {title: {text: 'Number of iterations'}}, seriesDefaults: { type: 'scatterLine'}, series: [{ xField: 'iterations', yField: 'score' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value.y#'} }"></div>
 <div data-bind="kendoChart: { data: saTemperatureScoreData, title: {text: 'Simulated annealing - dependency of score on start temperature'}, yAxis: {title: {text: 'Score'}}, xAxis: {title: {text: 'Temperature starting value'}},seriesDefaults: { type: 'scatterLine'}, series: [{ xField: 'temperature', yField: 'score' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value.y#'} }"></div>
 <div data-bind="kendoChart: { data: saTemperatureAlphaScoreData, title: {text: 'Simulated annealing - dependency of score on parameter of temperature cooling'}, yAxis: {title: {text: 'Score'}}, xAxis: {title: {text: 'Temperature cooling parameter'}},seriesDefaults: { type: 'scatterLine'}, series: [{ xField: 'temperatureAlpha', yField: 'score' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value.y#'} }"></div>
+<div data-bind="kendoChart: { data: alghoritmSaData, title: {text: 'Simulated annealing alghoritms'},valueAxis: [{name: 'Score'}], legend: {visible:false}, seriesDefaults: { type: 'bar'}, series: [{ name: 'score', field: 'value' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value#'} }"></div>
+
+<div data-bind="kendoChart: { data: alghoritmAntData, title: {text: 'Ant colony alghoritm'},valueAxis: [{name: 'Score'}], legend: {visible:false}, seriesDefaults: { type: 'bar'}, series: [{ name: 'score', field: 'value' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value#'} }"></div>
+
+<div data-bind="kendoChart: { data: alghoritmNnData, title: {text: 'Repeated nearest neigbour alghoritm'},valueAxis: [{name: 'Score'}], legend: {visible:false}, seriesDefaults: { type: 'bar'}, series: [{ name: 'score', field: 'value' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value#'} }"></div>
+
 <div data-bind="kendoChart: { data: alghoritmCompareData, title: {text: 'All alghoritms - comparision'},valueAxis: [{name: 'Score'}], legend: {visible:false}, seriesDefaults: { type: 'bar'},categoryAxis: {categories: ['Simulated Annealing','Repeated Nearest Neigbour','Ant Colony']}, series: [{ name: 'score', field: 'value' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value#'} }"></div>
 <script>
 
@@ -321,11 +327,21 @@
                 that.saIterationScoreData.removeAll();
                 that.saTemperatureScoreData.removeAll();
                 that.saTemperatureAlphaScoreData.removeAll();
+                that.alghoritmSaData.removeAll();
+                that.alghoritmAntData.removeAll();
+                that.alghoritmNnData.removeAll();
                 $.each(result.SimulatedAnnealingResults, function (index, elem) {
                     that.saIterationScoreData.push({ iterations: elem.Parameters.NumberOfIteration, score: elem.ScoreAvarege });
                     that.saTemperatureScoreData.push({ temperature: elem.Parameters.TemperatureMax, score: elem.ScoreAvarege });
                     that.saTemperatureAlphaScoreData.push({ temperatureAlpha: elem.Parameters.TemperatureAlpha, score: elem.ScoreAvarege });
+                    that.alghoritmSaData.push({ name: 'score', value: elem.ScoreAvarege });
                     
+                });
+                $.each(result.AntColonyResults, function (index, elem) {
+                    that.alghoritmAntData.push({ name: 'score', value: elem.Score });
+                });
+                $.each(result.RepeatedNearestNeighborResults, function (index, elem) {
+                    that.alghoritmNnData.push({ name: 'score', value: elem.Score });
                 });
                 that.alghoritmCompareData.push({ name: 'score', value: result.AverageSaScore });
                 that.alghoritmCompareData.push({ name: 'score', value: result.AverageNnScore });
@@ -421,6 +437,9 @@
         this.saTemperatureScoreData = ko.observableArray();
         this.saTemperatureAlphaScoreData = ko.observableArray();
         this.alghoritmCompareData = ko.observableArray();
+        this.alghoritmSaData = ko.observableArray();
+        this.alghoritmAntData = ko.observableArray();
+        this.alghoritmNnData = ko.observableArray();
     }
 
     var model;
