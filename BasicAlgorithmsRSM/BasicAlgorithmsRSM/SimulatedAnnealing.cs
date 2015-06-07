@@ -80,7 +80,7 @@ namespace BasicAlgorithmsRSM
             {
                 var index = path.GetLastIndexWithinLimit(Parameters.TimeConstrain);
 
-                var i = randomIndexes.First(r => r <= index);
+                var i = randomIndexes.First(r => r < index);
 
                 var j = randomIndexes.First(r => r != i);
 

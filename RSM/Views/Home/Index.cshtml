@@ -210,7 +210,6 @@
             //var searchManager = new Microsoft.Maps.Search.SearchManager(map);
             //searchManager.search({ what: query, where: where, count: 50, callback: geocodeCallback });
             $.post("/Home/FindLocations", { query: query, near: where, howMany: howMany }, function (result) {
-                debugger;
                 locations = result;
                 drawLocations(result.locations);
             });

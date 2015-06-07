@@ -129,6 +129,8 @@
         <ul class="list-group" data-bind="foreach: antToRun">
             <li class="list-group-item">
                 Time constrain <span data-bind="text: TimeConstrain"></span>
+                <button data-bind="click: $parent.removeAnt" class="btn btn-danger">Remove</button>
+                <button data-bind="click: $parent.showAnt" class="btn btn-info">Show on map</button>
             </li>
         </ul>
     </div>
@@ -137,6 +139,8 @@
         <ul class="list-group" data-bind="foreach: nnToRun">
             <li class="list-group-item">
                 Time constrain <span data-bind="text: TimeConstrain"></span>
+                <button data-bind="click: $parent.removeNn" class="btn btn-danger">Remove</button>
+                <button data-bind="click: $parent.showNn" class="btn btn-info">Show on map</button>
             </li>
         </ul>
     </div>
@@ -149,7 +153,10 @@
     <div id="mapDiv" style="height: 800px; position: relative;"></div>
 </div>
 <script type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0&mkt=pl-pl"></script>
-<div data-bind="kendoChart: { data: items, seriesDefaults: { type: 'scatterLine'}, series: [{ xField: 'iterations', yField: 'score' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value.y#'} }"></div>
+<div data-bind="kendoChart: { data: saIterationScoreData, title: {text: 'Simulated annealing - dependency of score on number of iterations'}, yAxis: {title: {text: 'Score'}}, xAxis: {title: {text: 'Number of iterations'}}, seriesDefaults: { type: 'scatterLine'}, series: [{ xField: 'iterations', yField: 'score' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value.y#'} }"></div>
+<div data-bind="kendoChart: { data: saTemperatureScoreData, title: {text: 'Simulated annealing - dependency of score on start temperature'}, yAxis: {title: {text: 'Score'}}, xAxis: {title: {text: 'Temperature starting value'}},seriesDefaults: { type: 'scatterLine'}, series: [{ xField: 'temperature', yField: 'score' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value.y#'} }"></div>
+<div data-bind="kendoChart: { data: saTemperatureAlphaScoreData, title: {text: 'Simulated annealing - dependency of score on parameter of temperature cooling'}, yAxis: {title: {text: 'Score'}}, xAxis: {title: {text: 'Temperature cooling parameter'}},seriesDefaults: { type: 'scatterLine'}, series: [{ xField: 'temperatureAlpha', yField: 'score' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value.y#'} }"></div>
+<div data-bind="kendoChart: { data: alghoritmCompareData, title: {text: 'All alghoritms - comparision'},valueAxis: [{name: 'Score'}], legend: {visible:false}, seriesDefaults: { type: 'bar'},categoryAxis: {categories: ['Simulated Annealing','Repeated Nearest Neigbour','Ant Colony']}, series: [{ name: 'score', field: 'value' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value#'} }"></div>
 <script>
 
     ////////MAP/////////
@@ -227,20 +234,22 @@
             var saAlgs = that.simulatedAnnealingToRun();
             var antAlgs = that.antToRun();
             var nnAlgs = that.nnToRun();
-            /*$.post("/Alghoritm/Run", { dataSetId: $("#dataSet").data("kendoDropDownList").value(), isAntChecked: a, isNnChecked: nn, isSaChecked: sa }, function(result) {
-                map.entities.clear();
-                pinLayer.clear();
-                linesLayer.clear();
-                locs = result;
-                drawLocations(result.locations);
-            });*/
 
             $.post("/Alghoritm/Run", { saTasks: saAlgs, antTasks: antAlgs, nnTasks: nnAlgs }, function (result) {
                 lastResult = result;
+                that.alghoritmCompareData.removeAll();
+                that.saIterationScoreData.removeAll();
+                that.saTemperatureScoreData.removeAll();
+                that.saTemperatureAlphaScoreData.removeAll();
                 $.each(result.SimulatedAnnealingResults, function (index, elem) {
-                    that.items.push({ iterations: elem.Parameters.NumberOfIteration, score: elem.Score });
+                    that.saIterationScoreData.push({ iterations: elem.Parameters.NumberOfIteration, score: elem.Score });
+                    that.saTemperatureScoreData.push({ temperature: elem.Parameters.TemperatureMax, score: elem.Score });
+                    that.saTemperatureAlphaScoreData.push({ temperatureAlpha: elem.Parameters.TemperatureAlpha, score: elem.Score });
+                    
                 });
-                
+                that.alghoritmCompareData.push({ name: 'score', value: result.AverageSaScore });
+                that.alghoritmCompareData.push({ name: 'score', value: result.AverageNnScore });
+                that.alghoritmCompareData.push({ name: 'score', value: result.AverageAntScore });
             });
         };
 
@@ -278,6 +287,23 @@
             that.nnToRun.push({ Id: that.nnToRun().length, TimeConstrain: time, DataSet: { Name: dataSet.Name, Id: dataSet.Id } });
         };
 
+        this.removeNn = function (elem) {
+            that.nnToRun.remove(elem);
+        };
+
+        this.showNa = function (elem) {
+            var found = lastResult.RepeatedNearestNeighborResults.filter(function (e) {
+                return e.Id === elem.Id;
+            })[0];
+
+            if (found) {
+                map.entities.clear();
+                pinLayer.clear();
+                linesLayer.clear();
+                drawLocations(found.Path);
+            }
+        }
+
         //Create Ant tasks
         this.addAnt = function () {
             var time = that.antTimeConstrain();
@@ -285,7 +311,27 @@
             that.antToRun.push({ Id: that.antToRun().length, TimeConstrain: time, DataSet: { Name: dataSet.Name, Id: dataSet.Id } });
         };
 
-        this.items = ko.observableArray();
+        this.removeAnt = function (elem) {
+            that.antToRun.remove(elem);
+        };
+
+        this.showAnt = function (elem) {
+            var found = lastResult.AntColonyResults.filter(function (e) {
+                return e.Id === elem.Id;
+            })[0];
+
+            if (found) {
+                map.entities.clear();
+                pinLayer.clear();
+                linesLayer.clear();
+                drawLocations(found.Path);
+            }
+        }
+
+        this.saIterationScoreData = ko.observableArray();
+        this.saTemperatureScoreData = ko.observableArray();
+        this.saTemperatureAlphaScoreData = ko.observableArray();
+        this.alghoritmCompareData = ko.observableArray();
     }
 
     var model;
