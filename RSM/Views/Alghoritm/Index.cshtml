@@ -223,22 +223,56 @@
 </div>
 
 
-
+<div class="row">
+    <div class="col-md-3">
+        <input type="checkbox" data-bind="checked: saIterationScoreChecked" />SA Score - Iteration
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-3">
+        <input type="checkbox" data-bind="checked: saTemperatureScoreChecked" />SA Score - Temperature
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-3">
+        <input type="checkbox" data-bind="checked: saTemperatureAlphaScoreChecked" />SA Temperature Alpha - Score
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-3">
+        <input type="checkbox" data-bind="checked: alghoritmSaChecked" />SA
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-3">
+        <input type="checkbox" data-bind="checked: alghoritmAntChecked" />AC
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-3">
+        <input type="checkbox" data-bind="checked: alghoritmNnChecked" />NN
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-3">
+        <input type="checkbox" data-bind="checked: alghoritmCompareChecked" />All
+    </div>
+</div>
 
 <div class="row">
     <div id="mapDiv" style="height: 800px; position: relative;"></div>
 </div>
 <script type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0&mkt=pl-pl"></script>
-<div data-bind="kendoChart: { data: saIterationScoreData, title: {text: 'Simulated annealing - dependency of score on number of iterations'}, yAxis: {title: {text: 'Score'}}, xAxis: {title: {text: 'Number of iterations'}}, seriesDefaults: { type: 'scatterLine'}, series: [{ xField: 'iterations', yField: 'score' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value.y#'} }"></div>
-<div data-bind="kendoChart: { data: saTemperatureScoreData, title: {text: 'Simulated annealing - dependency of score on start temperature'}, yAxis: {title: {text: 'Score'}}, xAxis: {title: {text: 'Temperature starting value'}},seriesDefaults: { type: 'scatterLine'}, series: [{ xField: 'temperature', yField: 'score' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value.y#'} }"></div>
-<div data-bind="kendoChart: { data: saTemperatureAlphaScoreData, title: {text: 'Simulated annealing - dependency of score on parameter of temperature cooling'}, yAxis: {title: {text: 'Score'}}, xAxis: {title: {text: 'Temperature cooling parameter'}},seriesDefaults: { type: 'scatterLine'}, series: [{ xField: 'temperatureAlpha', yField: 'score' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value.y#'} }"></div>
-<div data-bind="kendoChart: { data: alghoritmSaData, title: {text: 'Simulated annealing alghoritms'},valueAxis: [{name: 'Score'}], legend: {visible:false}, seriesDefaults: { type: 'bar'}, series: [{ name: 'score', field: 'value' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value#'} }"></div>
+<div data-bind="visible: saIterationScoreChecked, kendoChart: { data: saIterationScoreData, title: {text: 'Simulated annealing - dependency of score on number of iterations'}, yAxis: {title: {text: 'Score'}}, xAxis: {title: {text: 'Number of iterations'}}, seriesDefaults: { type: 'scatterLine'}, series: [{ xField: 'iterations', yField: 'score' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value.y#'} }"></div>
+<div data-bind="visible: saTemperatureScoreChecked, kendoChart: { data: saTemperatureScoreData, title: {text: 'Simulated annealing - dependency of score on start temperature'}, yAxis: {title: {text: 'Score'}}, xAxis: {title: {text: 'Temperature starting value'}},seriesDefaults: { type: 'scatterLine'}, series: [{ xField: 'temperature', yField: 'score' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value.y#'} }"></div>
+<div data-bind="visible: saTemperatureAlphaScoreChecked, kendoChart: { data: saTemperatureAlphaScoreData, title: {text: 'Simulated annealing - dependency of score on parameter of temperature cooling'}, yAxis: {title: {text: 'Score'}}, xAxis: {title: {text: 'Temperature cooling parameter'}},seriesDefaults: { type: 'scatterLine'}, series: [{ xField: 'temperatureAlpha', yField: 'score' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value.y#'} }"></div>
+<div data-bind="visible: alghoritmSaChecked, kendoChart: { data: alghoritmSaData, title: {text: 'Simulated annealing alghoritms'},valueAxis: [{name: 'Score'}], legend: {visible:false}, seriesDefaults: { type: 'bar'}, series: [{ name: 'score', field: 'value' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value#'} }"></div>
 
-<div data-bind="kendoChart: { data: alghoritmAntData, title: {text: 'Ant colony alghoritm'},valueAxis: [{name: 'Score'}], legend: {visible:false}, seriesDefaults: { type: 'bar'}, series: [{ name: 'score', field: 'value' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value#'} }"></div>
+<div data-bind="visible: alghoritmAntChecked, kendoChart: { data: alghoritmAntData, title: {text: 'Ant colony alghoritm'},valueAxis: [{name: 'Score'}], legend: {visible:false}, seriesDefaults: { type: 'bar'}, series: [{ name: 'score', field: 'value' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value#'} }"></div>
 
-<div data-bind="kendoChart: { data: alghoritmNnData, title: {text: 'Repeated nearest neigbour alghoritm'},valueAxis: [{name: 'Score'}], legend: {visible:false}, seriesDefaults: { type: 'bar'}, series: [{ name: 'score', field: 'value' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value#'} }"></div>
+<div data-bind="visible: alghoritmNnChecked, kendoChart: { data: alghoritmNnData, title: {text: 'Repeated nearest neigbour alghoritm'},valueAxis: [{name: 'Score'}], legend: {visible:false}, seriesDefaults: { type: 'bar'}, series: [{ name: 'score', field: 'value' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value#'} }"></div>
 
-<div data-bind="kendoChart: { data: alghoritmCompareData, title: {text: 'All alghoritms - comparision'},valueAxis: [{name: 'Score'}], legend: {visible:false}, seriesDefaults: { type: 'bar'},categoryAxis: {categories: ['Simulated Annealing','Repeated Nearest Neigbour','Ant Colony']}, series: [{ name: 'score', field: 'value' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value#'} }"></div>
+<div data-bind="visible: alghoritmCompareChecked, kendoChart: { data: alghoritmCompareData, title: {text: 'All alghoritms - comparision'},valueAxis: [{name: 'Score'}], legend: {visible:false}, seriesDefaults: { type: 'bar'},categoryAxis: {categories: ['Simulated Annealing','Repeated Nearest Neigbour','Ant Colony']}, series: [{ name: 'score', field: 'value' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value#'} }"></div>
 <script>
 
     ////////MAP/////////
@@ -293,6 +327,16 @@
         this.simmulatedAnnealingChecked = ko.observable(false);
         this.antChecked = ko.observable(false);
         this.nearestNeigbourChecked = ko.observable(false);
+
+        this.saIterationScoreChecked = ko.observable(false);
+        this.saTemperatureScoreChecked = ko.observable(false);
+        this.saTemperatureAlphaScoreChecked = ko.observable(false);
+        this.alghoritmSaChecked = ko.observable(false);
+        this.alghoritmAntChecked = ko.observable(false);
+        this.alghoritmNnChecked = ko.observable(false);
+        this.alghoritmCompareChecked = ko.observable(false);
+
+
 
         /////Simulated Annealing parameters
         this.saTemperature = ko.observable("");
