@@ -215,9 +215,12 @@
             });
         }
         this.saveLocations = function () {
+            target.append(spinner.el);
             var where = that.searchWhere();
             var name = that.dataSetName();
-            $.post("/Home/SaveDataSet", { locations: JSON.stringify(locations.locations), where: where, dataSetName: name });
+            $.post("/Home/SaveDataSet", { locations: JSON.stringify(locations.locations), where: where, dataSetName: name }, function() {
+                spinner.spin();
+            });
         }
     }
 

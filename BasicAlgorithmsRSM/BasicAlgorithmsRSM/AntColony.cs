@@ -141,7 +141,7 @@ namespace BasicAlgorithmsRSM
 
         private double Visibility(Edge edge, Vertex targetVertex)
         {
-            return targetVertex.Score / edge.Duration;
+            return targetVertex.Score;// / edge.Duration;
         }
 
         private void UpdatePheromonOnEdge(Edge e)

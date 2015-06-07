@@ -41,7 +41,7 @@
             </div>
         </div>
     </div>
-    <div class="container body-content">
+    <div class="container body-content spinner">
         @RenderBody()
         <hr />
         <footer>
@@ -50,5 +50,13 @@
     </div>
 
     @RenderSection("scripts", required: false)
+<script>
+    var spinner;
+    var target;
+    $(function() {
+        target = $('.spinner');
+        spinner = new Spinner().spin();
+    });
+</script>
 </body>
 </html>

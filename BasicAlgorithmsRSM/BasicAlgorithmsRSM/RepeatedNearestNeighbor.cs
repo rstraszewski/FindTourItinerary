@@ -77,7 +77,7 @@ namespace BasicAlgorithmsRSM
 
         private double FactorOfAdvantage(Edge edge, Vertex targetVertex)
         {
-            return targetVertex.Score/edge.Duration;
+            return targetVertex.Score;//edge.Duration;
         }
         
     }

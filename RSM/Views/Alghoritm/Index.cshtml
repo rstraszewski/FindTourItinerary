@@ -84,6 +84,7 @@
     <div class="row">
         <button class="btn btn-primary" data-bind="click: addSimulatedAnnealing">Add simulated annealing to run</button>
     </div>
+    <div class="clearfix"></div>
 </div>
 
 @*Form for parameters of Ant Colony*@
@@ -320,7 +321,7 @@
             var saAlgs = that.simulatedAnnealingToRun();
             var antAlgs = that.antToRun();
             var nnAlgs = that.nnToRun();
-
+            target.append(spinner.el);
             $.post("/Alghoritm/Run", { saTasks: saAlgs, antTasks: antAlgs, nnTasks: nnAlgs }, function (result) {
                 lastResult = result;
                 that.alghoritmCompareData.removeAll();
@@ -346,6 +347,7 @@
                 that.alghoritmCompareData.push({ name: 'score', value: result.AverageSaScore });
                 that.alghoritmCompareData.push({ name: 'score', value: result.AverageNnScore });
                 that.alghoritmCompareData.push({ name: 'score', value: result.AverageAntScore });
+                spinner.spin();
             });
         };
 
