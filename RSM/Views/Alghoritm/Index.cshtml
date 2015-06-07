@@ -119,6 +119,8 @@
                 Temperature change parameter <span data-bind="text: TemperatureAlpha"></span>,
                 Number of iterations <span data-bind="text: NumberOfIteration"></span>,
                 DataSet <span data-bind="text: DataSet.Name"></span>
+                <button data-bind="click: $parent.removeSa" class="btn btn-danger">Remove</button>
+                <button data-bind="click: $parent.showSa" class="btn btn-info">Show on map</button>
             </li>
         </ul>
     </div>
@@ -192,7 +194,7 @@
         map.entities.push(linesLayer);
     }
 
-
+    var lastResult;
     //////////////////
 
     function ViewModel() {
@@ -234,10 +236,11 @@
             });*/
 
             $.post("/Alghoritm/Run", { saTasks: saAlgs, antTasks: antAlgs, nnTasks: nnAlgs }, function (result) {
+                lastResult = result;
                 $.each(result.SimulatedAnnealingResults, function (index, elem) {
                     that.items.push({ iterations: elem.Parameters.NumberOfIteration, score: elem.Score });
                 });
-
+                
             });
         };
 
@@ -248,21 +251,38 @@
             var tempAlpha = that.saTemperatureAlpha();
             var iterations = that.saNumberOfIterations();
             var dataSet = $("#dataSet").data("kendoDropDownList").dataItem();
-            that.simulatedAnnealingToRun.push({ TimeConstrain: time, TemperatureMax: temp, TemperatureAlpha: tempAlpha, NumberOfIteration: iterations, DataSet: { Name: dataSet.Name, Id: dataSet.Id } });
+            that.simulatedAnnealingToRun.push({ Id: that.simulatedAnnealingToRun().length, TimeConstrain: time, TemperatureMax: temp, TemperatureAlpha: tempAlpha, NumberOfIteration: iterations, DataSet: { Name: dataSet.Name, Id: dataSet.Id } });
         };
+
+        this.removeSa = function(elem) {
+            that.simulatedAnnealingToRun.remove(elem);
+        };
+
+        this.showSa = function(elem) {
+            var found = lastResult.SimulatedAnnealingResults.filter(function (e) {
+                return e.Id === elem.Id;
+            })[0];
+
+            if (found) {
+                map.entities.clear();
+                pinLayer.clear();
+                linesLayer.clear();
+                drawLocations(found.Path);
+            }
+        }
 
         //Create NN tasks
         this.addNn = function() {
             var time = that.nnTimeConstrain();
             var dataSet = $("#dataSet").data("kendoDropDownList").dataItem();
-            that.nnToRun.push({ TimeConstrain: time, DataSet: { Name: dataSet.Name, Id: dataSet.Id } });
+            that.nnToRun.push({ Id: that.nnToRun().length, TimeConstrain: time, DataSet: { Name: dataSet.Name, Id: dataSet.Id } });
         };
 
         //Create Ant tasks
         this.addAnt = function () {
             var time = that.antTimeConstrain();
             var dataSet = $("#dataSet").data("kendoDropDownList").dataItem();
-            that.antToRun.push({ TimeConstrain: time, DataSet: { Name: dataSet.Name, Id: dataSet.Id } });
+            that.antToRun.push({ Id: that.antToRun().length, TimeConstrain: time, DataSet: { Name: dataSet.Name, Id: dataSet.Id } });
         };
 
         this.items = ko.observableArray();

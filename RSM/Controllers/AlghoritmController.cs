@@ -38,11 +38,14 @@ namespace RSM.Controllers
             public float TemperatureAlpha { get; set; }
             public double TemperatureMax { get; set; }
             public double TimeConstrain { get; set; }
+            public int Id { get; set; }
         }
         public class AntColonyTask
         {
             public DataSetViewModel DataSet { get; set; }
             public double TimeConstrain { get; set; }
+            public int Id { get; set; }
+
 
         }
 
@@ -50,6 +53,8 @@ namespace RSM.Controllers
         {
             public DataSetViewModel DataSet { get; set; }
             public double TimeConstrain { get; set; }
+            public int Id { get; set; }
+
 
         }
 
@@ -59,6 +64,8 @@ namespace RSM.Controllers
             public List<Location> Path { get; set; }
             public double Score { get; set; }
             public DataSetViewModel DataSet { get; set; }
+            public int Id { get; set; }
+
         }
 
         public class AntColonyResult
@@ -67,6 +74,8 @@ namespace RSM.Controllers
             public List<Location> Path { get; set; }
             public double Score { get; set; }
             public DataSetViewModel DataSet { get; set; }
+            public int Id { get; set; }
+
         }
 
         public class RepeatedNearestNeighborResult
@@ -75,6 +84,8 @@ namespace RSM.Controllers
             public List<Location> Path { get; set; }
             public double Score { get; set; }
             public DataSetViewModel DataSet { get; set; }
+            public int Id { get; set; }
+
         }
 
         public class Result
@@ -85,17 +96,17 @@ namespace RSM.Controllers
 
             public double AverageSaScore
             {
-                get { return SimulatedAnnealingResults.Sum(e => e.Score)/SimulatedAnnealingResults.Count; }
+                get { return SimulatedAnnealingResults.Count > 0 ? SimulatedAnnealingResults.Sum(e => e.Score) / SimulatedAnnealingResults.Count : 0; }
             }
 
             public double AverageNnScore
             {
-                get { return RepeatedNearestNeighborResults.Sum(e => e.Score) / RepeatedNearestNeighborResults.Count; }
+                get { return RepeatedNearestNeighborResults.Count > 0 ? RepeatedNearestNeighborResults.Sum(e => e.Score) / RepeatedNearestNeighborResults.Count : 0; }
             }
 
             public double AverageAntScore
             {
-                get { return AntColonyResults.Sum(e => e.Score) / AntColonyResults.Count; }
+                get { return AntColonyResults.Count > 0 ? AntColonyResults.Sum(e => e.Score) / AntColonyResults.Count : 0; }
                 
             }
             public Result()
@@ -127,7 +138,8 @@ namespace RSM.Controllers
                         Parameters = parameters,
                         DataSet = saTask.DataSet,
                         Path = locations,
-                        Score = resultSa.Score
+                        Score = resultSa.Score,
+                        Id = saTask.Id
                     });
                 }
                 if (nnTasks != null)
@@ -146,7 +158,9 @@ namespace RSM.Controllers
                         Parameters = parameters,
                         DataSet = nnTask.DataSet,
                         Path = locations,
-                        Score = resultSa.Score
+                        Score = resultSa.Score,
+                        Id = nnTask.Id
+
                     });
                 }
                 if (antTasks != null)
@@ -165,7 +179,9 @@ namespace RSM.Controllers
                         Parameters = parameters,
                         DataSet = antTask.DataSet,
                         Path = locations,
-                        Score = resultAnt.Score
+                        Score = resultAnt.Score,
+                        Id = antTask.Id
+
                     });
                 }
 
