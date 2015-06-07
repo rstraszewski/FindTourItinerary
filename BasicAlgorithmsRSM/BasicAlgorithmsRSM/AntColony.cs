@@ -27,11 +27,16 @@ namespace BasicAlgorithmsRSM
         public double absolut;
         public double minVal;
     }
+    public class AntColonyParameters
+    {
+        public double TimeConstrain { get; set; }
 
+    }
     public class AntColony : IAlgorithm
     {
+        public AntColonyParameters Parameters { get; set; }
         private Graph Graph;
-        readonly long TimeConstrain;
+        //readonly long TimeConstrain;
         public GraphsPath Result { get; set; }
         public double bestScore { get; set; }
 
@@ -43,12 +48,12 @@ namespace BasicAlgorithmsRSM
         private readonly double TrailImportance = 1;               //alpha
         private readonly double VisibilityImportance = 1;          //beta
 
-        private List<Ant> Ants; 
+        private List<Ant> Ants;
 
-        public AntColony(Graph graph, long timeConstrain)
+        public AntColony(Graph graph, AntColonyParameters parameters)
         {
             this.Graph = graph;
-            this.TimeConstrain = timeConstrain;
+            Parameters = parameters;
         }
 
         public GraphsPath Performe()
@@ -85,7 +90,7 @@ namespace BasicAlgorithmsRSM
         {
             var vertexToCheck = ant.CurrentPosition.ConnectedVertices
                 .Except(ant.TraveledDistance.VerticesSequence)
-                .Where(e => ant.TraveledDistance.Duration + ant.CurrentPosition.GetEdgeTo(e).Duration <= TimeConstrain);
+                .Where(e => ant.TraveledDistance.Duration + ant.CurrentPosition.GetEdgeTo(e).Duration <= Parameters.TimeConstrain);
             if (vertexToCheck.Count() == 0)
                 return null;
 

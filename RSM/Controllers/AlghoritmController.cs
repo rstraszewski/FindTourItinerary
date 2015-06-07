@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Web;
 using System.Web.Mvc;
+using AutoMapper;
 using BasicAlgorithmsRSM;
 using RSM.Entities;
 using RSM.Models;
@@ -17,53 +19,161 @@ namespace RSM.Controllers
     }
     public class AlghoritmController : Controller
     {
-        
+
         // GET: Alghoritm
         public ActionResult Index()
         {
             ViewBag.DataSet = new List<DataSetViewModel>();
             using (var dbContext = new RsmDbContext())
             {
-                ViewBag.DataSet.AddRange(dbContext.DataSets.Select(ds => new DataSetViewModel(){Id = ds.Id, Name = ds.Name}));
+                ViewBag.DataSet.AddRange(dbContext.DataSets.Select(ds => new DataSetViewModel() { Id = ds.Id, Name = ds.Name }));
             }
             return View();
         }
 
-        public ActionResult Run(long dataSetId, bool isAntChecked, bool isNnChecked, bool isSaChecked)
+        public class SimulatedAnnealingTask
         {
-            using (var dbContext = new RsmDbContext())
-            {
-                var dataSet = dbContext.DataSets.Find(dataSetId);
-                var graph = new Graph(dataSet);
-                if (isNnChecked)
-                {
-                    var alg = new RepeatedNearestNeighbor(graph, 15000);
-                    var result = alg.Performe();
-                    var ids = result.VerticesSequence.Select(v => v.Id);
-                    var locations = dbContext.Locations.Where(loc => ids.Contains(loc.Id)).ToList();
-                    return Json(new { locations });
-                }
+            public DataSetViewModel DataSet { get; set; }
+            public int NumberOfIteration { get; set; }
+            public float TemperatureAlpha { get; set; }
+            public double TemperatureMax { get; set; }
+            public double TimeConstrain { get; set; }
+        }
+        public class AntColonyTask
+        {
+            public DataSetViewModel DataSet { get; set; }
+            public double TimeConstrain { get; set; }
 
-                if (isAntChecked)
-                {
-                    var alg = new AntColony(graph, 15000);
-                    var result = alg.Performe();
-                    var ids = result.VerticesSequence.Select(v => v.Id);
-                    var locations = dbContext.Locations.Where(loc => ids.Contains(loc.Id)).ToList();
-                    return Json(new { locations });
-                }
-
-                if (isSaChecked)
-                {
-                    var saAlg = new SimulatedAnnealing(graph, 15000);
-                    var resultSa = saAlg.Performe(30000);
-                    var ids = resultSa.VerticesSequence.Select(v => v.Id);
-                    var locations = dbContext.Locations.Where(loc => ids.Contains(loc.Id)).ToList();
-                    return Json(new {locations});
-                }
-            }
-            return Json("");
         }
 
+        public class RepeatedNearestNeighborTask
+        {
+            public DataSetViewModel DataSet { get; set; }
+            public double TimeConstrain { get; set; }
+
+        }
+
+        public class SimulatedAnnealingResult
+        {
+            public SimulatedAnnealingParameters Parameters { get; set; }
+            public List<Location> Path { get; set; }
+            public double Score { get; set; }
+            public DataSetViewModel DataSet { get; set; }
+        }
+
+        public class AntColonyResult
+        {
+            public AntColonyParameters Parameters { get; set; }
+            public List<Location> Path { get; set; }
+            public double Score { get; set; }
+            public DataSetViewModel DataSet { get; set; }
+        }
+
+        public class RepeatedNearestNeighborResult
+        {
+            public RepeatedNearestNeighborParameters Parameters { get; set; }
+            public List<Location> Path { get; set; }
+            public double Score { get; set; }
+            public DataSetViewModel DataSet { get; set; }
+        }
+
+        public class Result
+        {
+            public List<SimulatedAnnealingResult> SimulatedAnnealingResults { get; set; }
+            public List<AntColonyResult> AntColonyResults { get; set; }
+            public List<RepeatedNearestNeighborResult> RepeatedNearestNeighborResults { get; set; }
+
+            public double AverageSaScore
+            {
+                get { return SimulatedAnnealingResults.Sum(e => e.Score)/SimulatedAnnealingResults.Count; }
+            }
+
+            public double AverageNnScore
+            {
+                get { return RepeatedNearestNeighborResults.Sum(e => e.Score) / RepeatedNearestNeighborResults.Count; }
+            }
+
+            public double AverageAntScore
+            {
+                get { return AntColonyResults.Sum(e => e.Score) / AntColonyResults.Count; }
+                
+            }
+            public Result()
+            {
+                SimulatedAnnealingResults = new List<SimulatedAnnealingResult>();
+                AntColonyResults = new List<AntColonyResult>();
+                RepeatedNearestNeighborResults = new List<RepeatedNearestNeighborResult>();
+            }
+        }
+
+        public ActionResult Run(List<SimulatedAnnealingTask> saTasks, List<RepeatedNearestNeighborTask> nnTasks, List<AntColonyTask> antTasks)
+        {
+            var result = new Result();
+            using (var dbContext = new RsmDbContext())
+            {
+                if(saTasks!=null)
+                foreach (var saTask in saTasks)
+                {
+                    var parameters = Mapper.Map<SimulatedAnnealingParameters>(saTask);
+                    var dataSet = dbContext.DataSets.Find(saTask.DataSet.Id);
+                    var graph = new Graph(dataSet);
+                    var saAlg = new SimulatedAnnealing(graph, parameters);
+                    var resultSa = saAlg.Performe();
+                    var ids = resultSa.VerticesSequence.Select(v => v.Id);
+                    var locations = dbContext.Locations.Where(loc => ids.Contains(loc.Id)).ToList();
+
+                    result.SimulatedAnnealingResults.Add(new SimulatedAnnealingResult()
+                    {
+                        Parameters = parameters,
+                        DataSet = saTask.DataSet,
+                        Path = locations,
+                        Score = resultSa.Score
+                    });
+                }
+                if (nnTasks != null)
+                foreach (var nnTask in nnTasks)
+                {
+                    var parameters = Mapper.Map<RepeatedNearestNeighborParameters>(nnTask);
+                    var dataSet = dbContext.DataSets.Find(nnTask.DataSet.Id);
+                    var graph = new Graph(dataSet);
+                    var nnAlg = new RepeatedNearestNeighbor(graph, parameters);
+                    var resultSa = nnAlg.Performe();
+                    var ids = resultSa.VerticesSequence.Select(v => v.Id);
+                    var locations = dbContext.Locations.Where(loc => ids.Contains(loc.Id)).ToList();
+
+                    result.RepeatedNearestNeighborResults.Add(new RepeatedNearestNeighborResult()
+                    {
+                        Parameters = parameters,
+                        DataSet = nnTask.DataSet,
+                        Path = locations,
+                        Score = resultSa.Score
+                    });
+                }
+                if (antTasks != null)
+                foreach (var antTask in antTasks)
+                {
+                    var parameters = Mapper.Map<AntColonyParameters>(antTask);
+                    var dataSet = dbContext.DataSets.Find(antTask.DataSet.Id);
+                    var graph = new Graph(dataSet);
+                    var antAlg = new AntColony(graph, parameters);
+                    var resultAnt = antAlg.Performe();
+                    var ids = resultAnt.VerticesSequence.Select(v => v.Id);
+                    var locations = dbContext.Locations.Where(loc => ids.Contains(loc.Id)).ToList();
+
+                    result.AntColonyResults.Add(new AntColonyResult()
+                    {
+                        Parameters = parameters,
+                        DataSet = antTask.DataSet,
+                        Path = locations,
+                        Score = resultAnt.Score
+                    });
+                }
+
+            }
+
+            return Json(result);
+        }
+
+       
     }
 }

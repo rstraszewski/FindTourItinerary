@@ -6,17 +6,22 @@ using System.Threading.Tasks;
 
 namespace BasicAlgorithmsRSM
 {
+    public class RepeatedNearestNeighborParameters
+    {
+        public double TimeConstrain { get; set; }
+        
+    }
     public class RepeatedNearestNeighbor : IAlgorithm
     {
         readonly Graph _graph;
-        readonly long _timeConstrain;
+        //readonly long _timeConstrain;
         private GraphsPath _result;
-
-        public RepeatedNearestNeighbor(Graph graph, long timeConstrain)
+        public RepeatedNearestNeighborParameters Parameters { get; set; }
+        public RepeatedNearestNeighbor(Graph graph, RepeatedNearestNeighborParameters parameters)
         {
             this._graph = graph;
-            this._timeConstrain = timeConstrain;
             this._result = new GraphsPath();
+            Parameters = parameters;
         }
 
         public GraphsPath Performe()
@@ -55,7 +60,7 @@ namespace BasicAlgorithmsRSM
                 var edge = _graph.GetEdge(startVertex, connectedVertex);
                 var timing = totalTime + edge.Duration;
                 var score = FactorOfAdvantage(edge, connectedVertex);
-                if ( score > bestScore && timing < _timeConstrain)
+                if ( score > bestScore && timing < Parameters.TimeConstrain)
                 {
                     bestScore = score;
                     bestTime = timing;

@@ -13,21 +13,21 @@
               .Name("dataSet")
               .DataValueField("Id")
               .DataTextField("Name")
-              .HtmlAttributes(new {data_bind = "value: dataSetId", style = "width:100%;"}))
+              .HtmlAttributes(new {style = "width:100%;"}))
     </div>
 </div>
 <div class="row">
     <div class="col-md-3">
-        <input type="checkbox" data-bind="checked: simmulatedAnnealingChecked"/>Simmulated annealing
+        <input type="checkbox" data-bind="checked: simmulatedAnnealingChecked" />Simmulated annealing
     </div>
     <div class="col-md-3">
 
-        <input type="checkbox" data-bind="checked: antChecked"/>Ant alghoritm
+        <input type="checkbox" data-bind="checked: antChecked" />Ant alghoritm
     </div>
 
     <div class="col-md-3">
 
-        <input type="checkbox" data-bind="checked: nearestNeigbourChecked"/>NN
+        <input type="checkbox" data-bind="checked: nearestNeigbourChecked" />NN
     </div>
 
     <div class="col-md-3">
@@ -37,11 +37,117 @@
 </div>
 
 
+@*Form for parameters of Simulated Annealing*@
+<div row="parameters-sa" data-bind="visible: simmulatedAnnealingChecked">
+    <h4>Parameters</h4>
+    <div class="row">
+        <div class="col-md-3">
+            <label>Temperature</label>
+        </div>
+        <div class="col-md-3">
+            <input data-bind="kendoNumericTextBox: { value: saTemperature, min: 0, max: 10000, step: 100, format: 'i' }" />
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <label>Time constrain</label>
+        </div>
+        <div class="col-md-3">
+            <input data-bind="kendoNumericTextBox: { value: saTimeConstrain, min: 0, max: 100000, step: 1000, format: 'i' }" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <label>Number of iterations</label>
+        </div>
+        <div class="col-md-3">
+            <input data-bind="kendoNumericTextBox: { value: saNumberOfIterations, min: 0, max: 100000, step: 1000, format: 'i' }" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <label>Temperature change parameter</label>
+        </div>
+        <div class="col-md-3">
+            <input data-bind="kendoNumericTextBox: { value: saTemperatureAlpha, min: 0, max: 1, step: 0.1, format: 'n6', decimals: 6 }" />
+        </div>
+    </div>
+    <div class="row">
+        <button class="btn btn-primary" data-bind="click: addSimulatedAnnealing">Add simulated annealing to run</button>
+    </div>
+</div>
+
+@*Form for parameters of Ant Colony*@
+<div row="parameters-sa" data-bind="visible: antChecked">
+    <div class="row">
+        <div class="col-md-3">
+            <label>Time constrain</label>
+        </div>
+        <div class="col-md-3">
+            <input data-bind="kendoNumericTextBox: { value: antTimeConstrain, min: 0, max: 100000, step: 1000, format: 'i' }" />
+        </div>
+        </div>
+        <div class="row">
+            <button class="btn btn-primary" data-bind="click: addAnt">Add ant colony to run</button>
+        </div>
+</div>
+
+@*Form for parameters of Repeated Nerest Neigbour*@
+<div row="parameters-sa" data-bind="visible: nearestNeigbourChecked">
+    <div class="row">
+        <div class="col-md-3">
+            <label>Time constrain</label>
+        </div>
+        <div class="col-md-3">
+            <input data-bind="kendoNumericTextBox: { value: nnTimeConstrain, min: 0, max: 100000, step: 1000, format: 'i' }" />
+        </div>
+        </div>
+        <div class="row">
+            <button class="btn btn-primary" data-bind="click: addNn">Add NN to run</button>
+        </div>
+</div>
+
+
+<div class="row" id="alghoritmsToRun">
+    <div class="panel panel-default">
+        <div class="panel-heading">Simmulated annealing:</div>
+        <ul class="list-group" data-bind="foreach: simulatedAnnealingToRun">
+            <li class="list-group-item">
+                Temperature: <span data-bind="text: TemperatureMax"></span>,
+                Time constrain <span data-bind="text: TimeConstrain"></span>,
+                Temperature change parameter <span data-bind="text: TemperatureAlpha"></span>,
+                Number of iterations <span data-bind="text: NumberOfIteration"></span>,
+                DataSet <span data-bind="text: DataSet.Name"></span>
+            </li>
+        </ul>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">Ant colony:</div>
+        <ul class="list-group" data-bind="foreach: antToRun">
+            <li class="list-group-item">
+                Time constrain <span data-bind="text: TimeConstrain"></span>
+            </li>
+        </ul>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">NN:</div>
+        <ul class="list-group" data-bind="foreach: nnToRun">
+            <li class="list-group-item">
+                Time constrain <span data-bind="text: TimeConstrain"></span>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+
+
 <div class="row">
     <div id="mapDiv" style="height: 800px; position: relative;"></div>
 </div>
 <script type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0&mkt=pl-pl"></script>
-
+<div data-bind="kendoChart: { data: items, seriesDefaults: { type: 'scatterLine'}, series: [{ xField: 'iterations', yField: 'score' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value.y#'} }"></div>
 <script>
 
     ////////MAP/////////
@@ -59,7 +165,7 @@
 
     function drawLocations(locations) {
         map.setView({ center: new Microsoft.Maps.Location(locations[0].Latitude, locations[0].Longitude), zoom: 13 });
-        locations.forEach(function(elem, index) {
+        locations.forEach(function (elem, index) {
             var elemLocation = new Microsoft.Maps.Location(elem.Latitude, elem.Longitude);
             var pin = new Microsoft.Maps.Pushpin(elemLocation);
             pin.Title = elem.Name;
@@ -72,7 +178,7 @@
     }
 
     function drawLines(locations) {
-        locations.forEach(function(elem, index) {
+        locations.forEach(function (elem, index) {
             var elemLocation = new Microsoft.Maps.Location(elem.Latitude, elem.Longitude);
             var elemInner = locations[index + 1];
             if (elemInner) {
@@ -92,25 +198,78 @@
     function ViewModel() {
         var that = this;
         this.dataSetId = ko.observable(null);
+
         this.simmulatedAnnealingChecked = ko.observable(false);
         this.antChecked = ko.observable(false);
         this.nearestNeigbourChecked = ko.observable(false);
-        this.runAlghoritms = function() {
-            var sa = that.simmulatedAnnealingChecked();
-            var a = that.antChecked();
-            var nn = that.nearestNeigbourChecked();
-            $.post("/Alghoritm/Run", { dataSetId: $("#dataSet").data("kendoDropDownList").value(), isAntChecked: a, isNnChecked: nn, isSaChecked: sa }, function(result) {
+
+        /////Simulated Annealing parameters
+        this.saTemperature = ko.observable("");
+        this.saTimeConstrain = ko.observable("");
+        this.saNumberOfIterations = ko.observable("");
+        this.saTemperatureAlpha = ko.observable("");
+        this.simulatedAnnealingToRun = ko.observableArray();
+        ////
+
+        /////Ant Colony parameters
+        this.antTimeConstrain = ko.observable("");
+        this.antToRun = ko.observableArray();
+        ////
+
+        /////Nearest neigbour parameters
+        this.nnTimeConstrain = ko.observable("");
+        this.nnToRun = ko.observableArray();
+        ////
+
+        this.runAlghoritms = function () {
+            var saAlgs = that.simulatedAnnealingToRun();
+            var antAlgs = that.antToRun();
+            var nnAlgs = that.nnToRun();
+            /*$.post("/Alghoritm/Run", { dataSetId: $("#dataSet").data("kendoDropDownList").value(), isAntChecked: a, isNnChecked: nn, isSaChecked: sa }, function(result) {
                 map.entities.clear();
                 pinLayer.clear();
                 linesLayer.clear();
                 locs = result;
                 drawLocations(result.locations);
+            });*/
+
+            $.post("/Alghoritm/Run", { saTasks: saAlgs, antTasks: antAlgs, nnTasks: nnAlgs }, function (result) {
+                $.each(result.SimulatedAnnealingResults, function (index, elem) {
+                    that.items.push({ iterations: elem.Parameters.NumberOfIteration, score: elem.Score });
+                });
+
             });
         };
+
+        //Create SA tasks
+        this.addSimulatedAnnealing = function () {
+            var time = that.saTimeConstrain();
+            var temp = that.saTemperature();
+            var tempAlpha = that.saTemperatureAlpha();
+            var iterations = that.saNumberOfIterations();
+            var dataSet = $("#dataSet").data("kendoDropDownList").dataItem();
+            that.simulatedAnnealingToRun.push({ TimeConstrain: time, TemperatureMax: temp, TemperatureAlpha: tempAlpha, NumberOfIteration: iterations, DataSet: { Name: dataSet.Name, Id: dataSet.Id } });
+        };
+
+        //Create NN tasks
+        this.addNn = function() {
+            var time = that.nnTimeConstrain();
+            var dataSet = $("#dataSet").data("kendoDropDownList").dataItem();
+            that.nnToRun.push({ TimeConstrain: time, DataSet: { Name: dataSet.Name, Id: dataSet.Id } });
+        };
+
+        //Create Ant tasks
+        this.addAnt = function () {
+            var time = that.antTimeConstrain();
+            var dataSet = $("#dataSet").data("kendoDropDownList").dataItem();
+            that.antToRun.push({ TimeConstrain: time, DataSet: { Name: dataSet.Name, Id: dataSet.Id } });
+        };
+
+        this.items = ko.observableArray();
     }
 
     var model;
-    $(document).ready(function() {
+    $(document).ready(function () {
         model = new ViewModel();
         ko.applyBindings(model);
         GetMap();

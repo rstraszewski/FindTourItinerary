@@ -1,55 +1,54 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace BasicAlgorithmsRSM
 {
+    public class SimulatedAnnealingParameters
+    {
+        public int NumberOfIteration { get; set; }
+        public double TemperatureAlpha { get; set; }
+        public double TemperatureMax { get; set; }
+        public double TimeConstrain { get; set; }
+
+    }
     public class SimulatedAnnealing : IAlgorithm
     {
         public Graph Graph { get; private set; }
-        public double TimeConstrain { get; private set; }
         public double Temperature { get; private set; }
-        public double TemperatureStart { get; private set; }
-        public SimulatedAnnealing(Graph graph, double timeConstrain)
+        public SimulatedAnnealingParameters Parameters { get; private set; }
+        public SimulatedAnnealing(Graph graph, SimulatedAnnealingParameters parameters)
         {
-            this.Graph = graph;
-            this.TimeConstrain = timeConstrain;
-            Temperature = 100;
-            TemperatureStart = Temperature;
-        }
-
-        public GraphsPath Performe()
-        {
-            return Performe(1000);
+            Graph = graph;
+            Temperature = parameters.TemperatureMax;
+            Parameters = parameters;
         }
 
         public GraphsPath Result { get; set; }
 
-        public GraphsPath Performe(int numberOfIteration)
+        public GraphsPath Performe()
         {
-            var alfa = 20;
             var rnd = new Random();
             Result = GetWholePathRandom();
 
-            for (var iter = 0; iter < numberOfIteration; iter++)
+            for (var iter = 0; iter < Parameters.NumberOfIteration; iter++)
             {
                 var randomDouble = rnd.NextDouble();
-                var numberToShuffle = (Temperature / TemperatureStart) *
+                var numberToShuffle = (Temperature / Parameters.TemperatureMax) *
                                       Graph.NumberOfVertices * (0.5);
 
                 var path = GetNeigbourWholePath(Math.Ceiling(numberToShuffle));
-                var p = Math.Pow(Math.E, -TemperatureStart * (Result.ScoreWithinLimit(TimeConstrain) - path.ScoreWithinLimit(TimeConstrain)) / (Temperature));//rozklad normalny, peak przy 1
+                var p = Math.Pow(Math.E, -Parameters.TemperatureMax * (Result.ScoreWithinLimit(Parameters.TimeConstrain) - path.ScoreWithinLimit(Parameters.TimeConstrain)) / (Temperature));//rozklad normalny, peak przy 1
 
                 if (randomDouble < p)
                 {
                     Result = path;
                 }
 
-                Temperature = 0.99 * Temperature;
+                Temperature = Parameters.TemperatureAlpha * Temperature;
             }
-            return Result.GetPartWithinLimit(TimeConstrain);
+            return Result.GetPartWithinLimit(Parameters.TimeConstrain);
         }
 
         private GraphsPath GetWholePathRandom()
@@ -79,7 +78,7 @@ namespace BasicAlgorithmsRSM
 
             if (howMany == 1)
             {
-                var index = path.GetLastIndexWithinLimit(TimeConstrain);
+                var index = path.GetLastIndexWithinLimit(Parameters.TimeConstrain);
 
                 var i = randomIndexes.First(r => r < index);
 
@@ -102,22 +101,5 @@ namespace BasicAlgorithmsRSM
             return path;
         }
 
-    }
-
-    static class MyExtensions
-    {
-        public static void Shuffle<T>(this IList<T> list)
-        {
-            int n = list.Count;
-            Random rnd = new Random();
-            while (n > 1)
-            {
-                int k = (rnd.Next(0, n) % n);
-                n--;
-                T value = list[k];
-                list[k] = list[n];
-                list[n] = value;
-            }
-        }
     }
 }
