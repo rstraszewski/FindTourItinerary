@@ -7,39 +7,28 @@
 @model List<RSM.Entities.DataSet>
 
 <div class="row">
-    <div class="col-md-6">
-        @(Html.Kendo().DropDownList()
+    <div class="col-md-2">
+        <label>Data set: </label>
+    </div>    <div class="col-md-6">
+            @(Html.Kendo().DropDownList()
               .BindTo(ViewBag.DataSet)
               .Name("dataSet")
               .DataValueField("Id")
               .DataTextField("Name")
-              .HtmlAttributes(new {style = "width:100%;"}))
+              .HtmlAttributes(new { style = "width:100%;" }))
+        </div>
     </div>
-</div>
-<div class="row">
-    <div class="col-md-3">
-        <input type="checkbox" data-bind="checked: simmulatedAnnealingChecked" />Simmulated annealing
-    </div>
-    <div class="col-md-3">
-
-        <input type="checkbox" data-bind="checked: antChecked" />Ant alghoritm
-    </div>
-
-    <div class="col-md-3">
-
-        <input type="checkbox" data-bind="checked: nearestNeigbourChecked" />NN
-    </div>
-
-    <div class="col-md-3">
-
-        <button class="btn" data-bind="click: runAlghoritms">Run Alghoritms</button>
-    </div>
-</div>
-
-
-@*Form for parameters of Simulated Annealing*@
-<div row="parameters-sa" data-bind="visible: simmulatedAnnealingChecked">
-    <h4>Parameters</h4>
+<br/>
+@(Html.Kendo().TabStrip()
+          .Name("alghoritmTabs")
+          .Animation(conf => conf.Open(effect => effect.Fade(FadeDirection.In)))
+          .Items(tabstrip =>
+          {
+              tabstrip.Add().Text("Simulated annealing")
+                  .Selected(true)
+                  .Content(@<text>
+                    @*Form for parameters of Simulated Annealing*@
+                    <div class="alghoritmTab" row="parameters-sa" data-bind="visible: simmulatedAnnealingChecked">
     <div class="row">
         <div class="col-md-3">
             <label>Temperature</label>
@@ -70,7 +59,7 @@
             <label>Temperature change parameter</label>
         </div>
         <div class="col-md-3">
-            <input data-bind="kendoNumericTextBox: { value: saTemperatureAlpha, min: 0, max: 1, step: 0.1, format: 'n6', decimals: 6 }"/>
+            <input data-bind="kendoNumericTextBox: { value: saTemperatureAlpha, min: 0, max: 1, step: 0.1, format: 'n6', decimals: 6 }" />
         </div>
     </div>
     <div class="row">
@@ -82,20 +71,24 @@
         </div>
     </div>
     <div class="row">
-        <button class="btn btn-primary" data-bind="click: addSimulatedAnnealing">Add simulated annealing to run</button>
+        <div class="col-md-3">
+            <button class="btn btn-primary" data-bind="click: addSimulatedAnnealing">Add simulated annealing to run</button>
+        </div>
     </div>
-    <div class="clearfix"></div>
-    <br/>
+    <br />
 </div>
+                </text>);
 
-@*Form for parameters of Ant Colony*@
-<div row="parameters-sa" data-bind="visible: antChecked">
+              tabstrip.Add().Text("Ant Colony")
+                  .Content(@<text>
+                    @*Form for parameters of Ant Colony*@
+                    <div class="alghoritmTab" row="parameters-sa" data-bind="visible: antChecked">
     <div class="row">
         <div class="col-md-3">
             <label>Time constrain</label>
         </div>
         <div class="col-md-3">
-            <input data-bind="kendoNumericTextBox: { value: antTimeConstrain, min: 0, max: 100000, step: 1000, format: 'i' }"/>
+            <input data-bind="kendoNumericTextBox: { value: antTimeConstrain, min: 0, max: 100000, step: 1000, format: 'i' }" />
         </div>
     </div>
     <div class="row">
@@ -153,15 +146,20 @@
         <div class="col-md-3">
             <input data-bind="kendoNumericTextBox: { value: antVisibilityImportance, min: 0, max: 1, step: 0.1, format: 'n6', decimals: 6 }" />
         </div>
-        </div>
-    <div class="row">
-        <button class="btn btn-primary" data-bind="click: addAnt">Add ant colony to run</button>
     </div>
-    <br/>
+    <div class="row">
+        <div class="col-md-3">
+            <button class="btn btn-primary" data-bind="click: addAnt">Add ant colony to run</button>
+        </div>
+    </div>
+    <br />
 </div>
+                </text>);
 
-@*Form for parameters of Repeated Nerest Neigbour*@
-<div row="parameters-sa" data-bind="visible: nearestNeigbourChecked">
+              tabstrip.Add().Text("Repetead Nearest Neigbour")
+                  .Content(@<text>
+                   @*Form for parameters of Repeated Nerest Neigbour*@
+                <div class="alghoritmTab" row="parameters-sa" data-bind="visible: nearestNeigbourChecked">
     <div class="row">
         <div class="col-md-3">
             <label>Time constrain</label>
@@ -169,27 +167,90 @@
         <div class="col-md-3">
             <input data-bind="kendoNumericTextBox: { value: nnTimeConstrain, min: 0, max: 100000, step: 1000, format: 'i' }" />
         </div>
-        </div>
-    <div class="row">
-        <button class="btn btn-primary" data-bind="click: addNn">Add NN to run</button>
     </div>
-    <br/>
+    <div class="row">
+        <div class="col-md-3">
+            <button class="btn btn-primary" data-bind="click: addNn">Add NN to run</button>
+        </div>
+    </div>
+    <br />
+</div>
+                </text>);
+
+              tabstrip.Add().Text("Charts to draw")
+                  .Content(@<text>
+                               <div class="alghoritmTab">
+                                    <div class="row">
+                                   <div class="col-md-3">
+                                       <input type="checkbox" data-bind="checked: saIterationScoreChecked"/>SA Score - Iteration
+                                   </div>
+                                   </div>
+                                   <div class="row">
+                                       <div class="col-md-3">
+                                           <input type="checkbox" data-bind="checked: saTemperatureScoreChecked"/>SA Score - Temperature
+                                       </div>
+                                   </div>
+                                   <div class="row">
+                                       <div class="col-md-3">
+                                           <input type="checkbox" data-bind="checked: saTemperatureAlphaScoreChecked"/>SA Temperature Alpha - Score
+                                       </div>
+                                   </div>
+                                   <div class="row">
+                                       <div class="col-md-3">
+                                           <input type="checkbox" data-bind="checked: alghoritmSaChecked"/>SA
+                                       </div>
+                                   </div>
+                                   <div class="row">
+                                       <div class="col-md-3">
+                                           <input type="checkbox" data-bind="checked: alghoritmAntChecked"/>AC
+                                       </div>
+                                   </div>
+                                   <div class="row">
+                                       <div class="col-md-3">
+                                           <input type="checkbox" data-bind="checked: alghoritmNnChecked"/>NN
+                                       </div>
+                                   </div>
+                                   <div class="row">
+                                       <div class="col-md-3">
+                                           <input type="checkbox" data-bind="checked: alghoritmCompareChecked"/>All
+                                       </div>
+                                   </div>
+                               </div>
+                </text>);
+          })
+      )
+<br/>
+<div class="row">
+<div class="col-md-3">
+
+    <button class="btn" data-bind="click: runAlghoritms">Run Alghoritms</button>
+</div>
 </div>
 
 
-<div class="row" id="alghoritmsToRun">
+
+
+
+<div class="panel row" id="alghoritmsToRun">
     <div class="panel panel-default">
         <div class="panel-heading">Simmulated annealing:</div>
         <ul class="list-group" data-bind="foreach: simulatedAnnealingToRun">
             <li class="list-group-item">
                 Temperature: <span data-bind="text: TemperatureMax"></span>,
-                Time constrain <span data-bind="text: TimeConstrain"></span>,
-                Temperature change parameter <span data-bind="text: TemperatureAlpha"></span>,
-                Number of iterations <span data-bind="text: NumberOfIteration"></span>,
-                How many times repeated <span data-bind="text: HomManyTimes"></span>,
-                DataSet <span data-bind="text: DataSet.Name"></span>
-                <button data-bind="click: $parent.removeSa" class="btn btn-danger">Remove</button>
-                <button data-bind="click: $parent.showSa" class="btn btn-info">Show on map</button>
+                Time constrain: <span data-bind="text: TimeConstrain"></span>,
+                Temperature change parameter: <span data-bind="text: TemperatureAlpha"></span>,
+                Number of iterations: <span data-bind="text: NumberOfIteration"></span>,
+                How many times repeated: <span data-bind="text: HomManyTimes"></span>,
+                DataSet: <span data-bind="text: DataSet.Name"></span>
+                <div class="row">
+                    <div class="col-md-4">
+                        <button data-bind="click: $parent.removeSa" class="btn btn-danger btn-sm">Remove</button>
+                        <button data-bind="click: $parent.showSa" class="btn btn-info btn-sm">Show on map</button>
+                    </div>
+                    <div class="col-md-4">
+                        Result: <span data-bind="text: Result.Score"></span>
+                    </div>
+                    </div>
             </li>
         </ul>
     </div>
@@ -223,56 +284,24 @@
 </div>
 
 
-<div class="row">
-    <div class="col-md-3">
-        <input type="checkbox" data-bind="checked: saIterationScoreChecked" />SA Score - Iteration
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-3">
-        <input type="checkbox" data-bind="checked: saTemperatureScoreChecked" />SA Score - Temperature
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-3">
-        <input type="checkbox" data-bind="checked: saTemperatureAlphaScoreChecked" />SA Temperature Alpha - Score
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-3">
-        <input type="checkbox" data-bind="checked: alghoritmSaChecked" />SA
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-3">
-        <input type="checkbox" data-bind="checked: alghoritmAntChecked" />AC
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-3">
-        <input type="checkbox" data-bind="checked: alghoritmNnChecked" />NN
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-3">
-        <input type="checkbox" data-bind="checked: alghoritmCompareChecked" />All
-    </div>
-</div>
+
 
 <div class="row">
     <div id="mapDiv" style="height: 800px; position: relative;"></div>
 </div>
 <script type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0&mkt=pl-pl"></script>
-<div data-bind="visible: saIterationScoreChecked, kendoChart: { data: saIterationScoreData, title: {text: 'Simulated annealing - dependency of score on number of iterations'}, yAxis: {title: {text: 'Score'}}, xAxis: {title: {text: 'Number of iterations'}}, seriesDefaults: { type: 'scatterLine'}, series: [{ xField: 'iterations', yField: 'score' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value.y#'} }"></div>
-<div data-bind="visible: saTemperatureScoreChecked, kendoChart: { data: saTemperatureScoreData, title: {text: 'Simulated annealing - dependency of score on start temperature'}, yAxis: {title: {text: 'Score'}}, xAxis: {title: {text: 'Temperature starting value'}},seriesDefaults: { type: 'scatterLine'}, series: [{ xField: 'temperature', yField: 'score' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value.y#'} }"></div>
-<div data-bind="visible: saTemperatureAlphaScoreChecked, kendoChart: { data: saTemperatureAlphaScoreData, title: {text: 'Simulated annealing - dependency of score on parameter of temperature cooling'}, yAxis: {title: {text: 'Score'}}, xAxis: {title: {text: 'Temperature cooling parameter'}},seriesDefaults: { type: 'scatterLine'}, series: [{ xField: 'temperatureAlpha', yField: 'score' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value.y#'} }"></div>
-<div data-bind="visible: alghoritmSaChecked, kendoChart: { data: alghoritmSaData, title: {text: 'Simulated annealing alghoritms'},valueAxis: [{name: 'Score'}], legend: {visible:false}, seriesDefaults: { type: 'bar'}, series: [{ name: 'score', field: 'value' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value#'} }"></div>
+<div class="chart" data-bind="visible: saIterationScoreChecked, kendoChart: { data: saIterationScoreData, title: {text: 'Simulated annealing - dependency of score on number of iterations'}, yAxis: {title: {text: 'Score'}}, xAxis: {title: {text: 'Number of iterations'}}, seriesDefaults: { type: 'scatterLine'}, series: [{ xField: 'iterations', yField: 'score' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value.y#'} }"></div>
+<div class="chart"  data-bind="visible: saTemperatureScoreChecked, kendoChart: { data: saTemperatureScoreData, title: {text: 'Simulated annealing - dependency of score on start temperature'}, yAxis: {title: {text: 'Score'}}, xAxis: {title: {text: 'Temperature starting value'}},seriesDefaults: { type: 'scatterLine'}, series: [{ xField: 'temperature', yField: 'score' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value.y#'} }"></div>
+<div class="chart"  data-bind="visible: saTemperatureAlphaScoreChecked, kendoChart: { data: saTemperatureAlphaScoreData, title: {text: 'Simulated annealing - dependency of score on parameter of temperature cooling'}, yAxis: {title: {text: 'Score'}}, xAxis: {title: {text: 'Temperature cooling parameter'}},seriesDefaults: { type: 'scatterLine'}, series: [{ xField: 'temperatureAlpha', yField: 'score' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value.y#'} }"></div>
+<div class="chart" data-bind="visible: alghoritmSaChecked, kendoChart: { data: alghoritmSaData, title: {text: 'Simulated annealing alghoritms'},valueAxis: [{name: 'Score'}], legend: {visible:false}, seriesDefaults: { type: 'bar'}, series: [{ name: 'score', field: 'value' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value#'} }"></div>
 
-<div data-bind="visible: alghoritmAntChecked, kendoChart: { data: alghoritmAntData, title: {text: 'Ant colony alghoritm'},valueAxis: [{name: 'Score'}], legend: {visible:false}, seriesDefaults: { type: 'bar'}, series: [{ name: 'score', field: 'value' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value#'} }"></div>
+<div class="chart" data-bind="visible: alghoritmAntChecked, kendoChart: { data: alghoritmAntData, title: {text: 'Ant colony alghoritm'},valueAxis: [{name: 'Score'}], legend: {visible:false}, seriesDefaults: { type: 'bar'}, series: [{ name: 'score', field: 'value' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value#'} }"></div>
 
-<div data-bind="visible: alghoritmNnChecked, kendoChart: { data: alghoritmNnData, title: {text: 'Repeated nearest neigbour alghoritm'},valueAxis: [{name: 'Score'}], legend: {visible:false}, seriesDefaults: { type: 'bar'}, series: [{ name: 'score', field: 'value' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value#'} }"></div>
+<div class="chart" data-bind="visible: alghoritmNnChecked, kendoChart: { data: alghoritmNnData, title: {text: 'Repeated nearest neigbour alghoritm'},valueAxis: [{name: 'Score'}], legend: {visible:false}, seriesDefaults: { type: 'bar'}, series: [{ name: 'score', field: 'value' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value#'} }"></div>
 
-<div data-bind="visible: alghoritmCompareChecked, kendoChart: { data: alghoritmCompareData, title: {text: 'All alghoritms - comparision'},valueAxis: [{name: 'Score'}], legend: {visible:false}, seriesDefaults: { type: 'bar'},categoryAxis: {categories: ['Simulated Annealing','Repeated Nearest Neigbour','Ant Colony']}, series: [{ name: 'score', field: 'value' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value#'} }"></div>
+<div class="chart" data-bind="visible: alghoritmCompareChecked, kendoChart: { data: alghoritmCompareData, title: {text: 'All alghoritms - comparision'},valueAxis: [{name: 'Score'}], legend: {visible:false}, seriesDefaults: { type: 'bar'},categoryAxis: {categories: ['Simulated Annealing','Repeated Nearest Neigbour','Ant Colony']}, series: [{ name: 'score', field: 'value' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value#'} }"></div>
+
+
 <script>
 
     ////////MAP/////////
@@ -324,9 +353,9 @@
         var that = this;
         this.dataSetId = ko.observable(null);
 
-        this.simmulatedAnnealingChecked = ko.observable(false);
-        this.antChecked = ko.observable(false);
-        this.nearestNeigbourChecked = ko.observable(false);
+        this.simmulatedAnnealingChecked = ko.observable(true);
+        this.antChecked = ko.observable(true);
+        this.nearestNeigbourChecked = ko.observable(true);
 
         this.saIterationScoreChecked = ko.observable(false);
         this.saTemperatureScoreChecked = ko.observable(false);
@@ -378,7 +407,12 @@
                 that.alghoritmSaData.removeAll();
                 that.alghoritmAntData.removeAll();
                 that.alghoritmNnData.removeAll();
+
                 $.each(result.SimulatedAnnealingResults, function (index, elem) {
+                    that.simulatedAnnealingToRun().filter(function (e) {
+                        return e.Id === elem.Id;
+                    })[0].Result.Score(elem.ScoreAvarege);
+                    
                     that.saIterationScoreData.push({ iterations: elem.Parameters.NumberOfIteration, score: elem.ScoreAvarege });
                     that.saTemperatureScoreData.push({ temperature: elem.Parameters.TemperatureMax, score: elem.ScoreAvarege });
                     that.saTemperatureAlphaScoreData.push({ temperatureAlpha: elem.Parameters.TemperatureAlpha, score: elem.ScoreAvarege });
@@ -406,8 +440,7 @@
             var iterations = that.saNumberOfIterations();
             var howMany = that.saHowMany();
             var dataSet = $("#dataSet").data("kendoDropDownList").dataItem();
-            debugger;
-            that.simulatedAnnealingToRun.push({ Id: that.simulatedAnnealingToRun().length, HomManyTimes: howMany, TimeConstrain: time, TemperatureMax: temp, TemperatureAlpha: tempAlpha, NumberOfIteration: iterations, DataSet: { Name: dataSet.Name, Id: dataSet.Id } });
+            that.simulatedAnnealingToRun.push({ Result: {Score: ko.observable(0)}, Id: that.simulatedAnnealingToRun().length, HomManyTimes: howMany, TimeConstrain: time, TemperatureMax: temp, TemperatureAlpha: tempAlpha, NumberOfIteration: iterations, DataSet: { Name: dataSet.Name, Id: dataSet.Id } });
         };
 
         this.removeSa = function(elem) {

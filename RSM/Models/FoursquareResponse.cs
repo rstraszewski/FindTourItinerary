@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace RSM.Models.Foursquare
+﻿namespace RSM.Models.Foursquare
 {
-
     public class FoursquareResponse
     {
         public Meta meta { get; set; }
@@ -379,5 +373,4 @@ namespace RSM.Models.Foursquare
         public string suffix { get; set; }
         public bool _default { get; set; }
     }
-
 }

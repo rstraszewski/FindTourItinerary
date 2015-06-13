@@ -10,6 +10,7 @@ using System.Web.Routing;
 using BasicAlgorithmsRSM;
 using RSM.Controllers;
 using RSM.Entities;
+using RSM.Models;
 
 namespace RSM
 {
@@ -31,9 +32,9 @@ namespace RSM
 
         private void RegisterMappings()
         {
-            AutoMapper.Mapper.CreateMap<AlghoritmController.SimulatedAnnealingTask, SimulatedAnnealingParameters>();
-            AutoMapper.Mapper.CreateMap<AlghoritmController.AntColonyTask, AntColonyParameters>();
-            AutoMapper.Mapper.CreateMap<AlghoritmController.RepeatedNearestNeighborTask, RepeatedNearestNeighborParameters>();
+            AutoMapper.Mapper.CreateMap<SimulatedAnnealingTask, SimulatedAnnealingParameters>();
+            AutoMapper.Mapper.CreateMap<AntColonyTask, AntColonyParameters>();
+            AutoMapper.Mapper.CreateMap<RepeatedNearestNeighborTask, RepeatedNearestNeighborParameters>();
         }
 
         private void Application_BeginRequest(Object source, EventArgs e)

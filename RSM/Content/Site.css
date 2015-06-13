@@ -17,3 +17,14 @@
 }
 
 
+#alghoritmTabs {
+    margin: 20px !important;
+}
+
+.alghoritmTab {
+    height: 320px !important;
+}
+
+.chart {
+    width: 100%;
+}

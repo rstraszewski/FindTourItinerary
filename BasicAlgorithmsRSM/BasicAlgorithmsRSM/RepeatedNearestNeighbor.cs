@@ -6,11 +6,6 @@ using System.Threading.Tasks;
 
 namespace BasicAlgorithmsRSM
 {
-    public class RepeatedNearestNeighborParameters
-    {
-        public double TimeConstrain { get; set; }
-        
-    }
     public class RepeatedNearestNeighbor : IAlgorithm
     {
         readonly Graph _graph;
@@ -77,7 +72,7 @@ namespace BasicAlgorithmsRSM
 
         private double FactorOfAdvantage(Edge edge, Vertex targetVertex)
         {
-            return targetVertex.Score;//edge.Duration;
+            return targetVertex.Score/edge.Duration;
         }
         
     }

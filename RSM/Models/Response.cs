@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Runtime.Serialization;
 
 namespace RSM.Models
 {
-    using System.Runtime.Serialization;
-
     namespace BingMapsRESTService.Common.JSON
     {
         [DataContract]
@@ -121,8 +116,8 @@ namespace RSM.Models
         }
 
         [DataContract(Namespace = "http://schemas.microsoft.com/search/local/ws/rest/v1")]
-        [KnownType(typeof(StaticMapMetadata))]
-        [KnownType(typeof(BirdseyeMetadata))]
+        [KnownType(typeof (StaticMapMetadata))]
+        [KnownType(typeof (BirdseyeMetadata))]
         public class ImageryMetadata : Resource
         {
             [DataMember(Name = "imageHeight", EmitDefaultValue = false)]
@@ -292,7 +287,7 @@ namespace RSM.Models
             public string Type { get; set; }
 
             /// <summary>
-            /// Latitude,Longitude
+            ///     Latitude,Longitude
             /// </summary>
             [DataMember(Name = "coordinates", EmitDefaultValue = false)]
             public double[] Coordinates { get; set; }
@@ -305,10 +300,10 @@ namespace RSM.Models
         }
 
         [DataContract]
-        [KnownType(typeof(Location))]
-        [KnownType(typeof(Route))]
-        [KnownType(typeof(TrafficIncident))]
-        [KnownType(typeof(ImageryMetadata))]
+        [KnownType(typeof (Location))]
+        [KnownType(typeof (Route))]
+        [KnownType(typeof (TrafficIncident))]
+        [KnownType(typeof (ImageryMetadata))]
         public class Resource
         {
             [DataMember(Name = "bbox", EmitDefaultValue = false)]
@@ -427,7 +422,7 @@ namespace RSM.Models
         }
 
         [DataContract]
-        [KnownType(typeof(Point))]
+        [KnownType(typeof (Point))]
         public class Shape
         {
             [DataMember(Name = "boundingBox", EmitDefaultValue = false)]

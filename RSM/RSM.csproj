@@ -168,7 +168,15 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AlghoritmController.cs" />
+    <Compile Include="Models\AntColonyResult.cs" />
+    <Compile Include="Models\AntColonyTask.cs" />
+    <Compile Include="Models\DataSetViewModel.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Models\RepeatedNearestNeighborResult.cs" />
+    <Compile Include="Models\RepeatedNearestNeighborTask.cs" />
+    <Compile Include="Models\Result.cs" />
+    <Compile Include="Models\SimulatedAnnealingResult.cs" />
+    <Compile Include="Models\SimulatedAnnealingTask.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

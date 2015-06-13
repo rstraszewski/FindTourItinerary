@@ -5,14 +5,6 @@ using System.Threading.Tasks;
 
 namespace BasicAlgorithmsRSM
 {
-    public class SimulatedAnnealingParameters
-    {
-        public int NumberOfIteration { get; set; }
-        public double TemperatureAlpha { get; set; }
-        public double TemperatureMax { get; set; }
-        public double TimeConstrain { get; set; }
-
-    }
     public class SimulatedAnnealing : IAlgorithm
     {
         public Graph Graph { get; private set; }
@@ -32,21 +24,29 @@ namespace BasicAlgorithmsRSM
             var rnd = new Random();
             Result = GetWholePathRandom();
 
+
             for (var iter = 0; iter < Parameters.NumberOfIteration; iter++)
             {
-                var randomDouble = rnd.NextDouble();
+                //var randomDouble = rnd.NextDouble();
+                var u1 = rnd.NextDouble(); //these are uniform(0,1) random doubles
+                var u2 = rnd.NextDouble();
+                var randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) *
+                             Math.Sin(2.0 * Math.PI * u2); //random normal(0,1)
+                var randNormal =
+                             1 + 0.2 * randStdNormal; //random normal(mean,stdDev^2)
                 var numberToShuffle = (Temperature / Parameters.TemperatureMax) *
                                       Graph.NumberOfVertices * (0.5);
 
                 var path = GetNeigbourWholePath(Math.Ceiling(numberToShuffle));
-                var p = Math.Pow(Math.E, -Parameters.TemperatureMax * (Result.ScoreWithinLimit(Parameters.TimeConstrain) - path.ScoreWithinLimit(Parameters.TimeConstrain)) / (Temperature));//rozklad normalny, peak przy 1
+                var p = Math.Pow(Math.E, -Parameters.TemperatureMax * (Result.ScoreWithinLimit(Parameters.TimeConstrain) - path.ScoreWithinLimit(Parameters.TimeConstrain)) / (5*Temperature));//rozklad normalny, peak przy 1
 
-                if (randomDouble < p)
+                if (randNormal < p)
                 {
                     Result = path;
                 }
 
-                Temperature = Parameters.TemperatureAlpha * Temperature;
+                //Temperature = Parameters.TemperatureAlpha * Temperature;
+                Temperature = Parameters.TemperatureMax * Math.Pow(Parameters.TemperatureAlpha, iter);
             }
             return Result.GetPartWithinLimit(Parameters.TimeConstrain);
         }
