@@ -38,9 +38,14 @@ namespace BasicAlgorithmsRSM
                                       Graph.NumberOfVertices * (0.5);
 
                 var path = GetNeigbourWholePath(Math.Ceiling(numberToShuffle));
-                var p = Math.Pow(Math.E, -Parameters.TemperatureMax * (Result.ScoreWithinLimit(Parameters.TimeConstrain) - path.ScoreWithinLimit(Parameters.TimeConstrain)) / (5*Temperature));//rozklad normalny, peak przy 1
+                var delta = Result.ScoreWithinLimit(Parameters.TimeConstrain) -
+                            path.ScoreWithinLimit(Parameters.TimeConstrain);
+                //var delta2 = Math.Pow(Result.ScoreWithinLimit(Parameters.TimeConstrain),3)/Result.DurationWithinLimit(Parameters.TimeConstrain) - Math.Pow(path.ScoreWithinLimit(Parameters.TimeConstrain),3) / path.DurationWithinLimit(Parameters.TimeConstrain);
 
-                if (randNormal < p)
+
+                var p = Math.Pow(Math.E, -Parameters.TemperatureMax * (delta) / (5*Temperature));//rozklad normalny, peak przy 1
+
+                if (delta < 0 || randNormal < p)
                 {
                     Result = path;
                 }
@@ -84,9 +89,9 @@ namespace BasicAlgorithmsRSM
 
                 var j = randomIndexes.First(r => r != i);
 
-                var temp = path.VerticesSequence[randomIndexes[i]];
-                path.VerticesSequence[randomIndexes[i]] = path.VerticesSequence[randomIndexes[j]];
-                path.VerticesSequence[randomIndexes[j]] = temp;
+                var temp = path.VerticesSequence[i];
+                path.VerticesSequence[i] = path.VerticesSequence[j];
+                path.VerticesSequence[j] = temp;
             }
             else
             {

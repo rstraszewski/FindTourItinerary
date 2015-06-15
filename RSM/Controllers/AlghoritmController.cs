@@ -103,7 +103,5 @@ namespace RSM.Controllers
 
             return Json(result);
         }
-
-       
     }
 }
