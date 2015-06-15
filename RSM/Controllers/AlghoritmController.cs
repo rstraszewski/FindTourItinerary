@@ -83,20 +83,24 @@ namespace RSM.Controllers
                     var parameters = Mapper.Map<AntColonyParameters>(antTask);
                     var dataSet = dbContext.DataSets.Find(antTask.DataSet.Id);
                     var graph = new Graph(dataSet);
-                    var antAlg = new AntColony(graph, parameters);
-                    var resultAnt = antAlg.Performe();
-                    var ids = resultAnt.VerticesSequence.Select(v => v.Id);
-                    var locations = dbContext.Locations.Where(loc => ids.Contains(loc.Id)).ToList();
-
-                    result.AntColonyResults.Add(new AntColonyResult()
+                    var antResult = new AntColonyResult()
                     {
                         Parameters = parameters,
                         DataSet = antTask.DataSet,
-                        Path = locations,
-                        Score = resultAnt.Score,
                         Id = antTask.Id
 
-                    });
+                    };
+                    for (var i = 0; i < antTask.HomManyTimes; i++)
+                    {
+                        var antAlg = new AntColony(graph, parameters);
+                        var resultAnt = antAlg.Performe();
+                        var ids = resultAnt.VerticesSequence.Select(v => v.Id);
+                        var locations = dbContext.Locations.Where(loc => ids.Contains(loc.Id)).ToList();
+                        antResult.Paths.Add(locations);
+                        antResult.Scores.Add(resultAnt.Score);
+                        
+                    }
+                    result.AntColonyResults.Add(antResult);
                 }
 
             }

@@ -3,24 +3,43 @@
 }
 <br />
 <div class="row">
-    <div class="col-md-3 input-group">
-        <input data-bind="value: searchQuery" class="form-control input-lg" />
+    <div class="col-md-2">
+        <label class="input-lg">Query</label>
     </div>
     <div class="col-md-3 input-group">
-        <input data-bind="value: searchWhere" class="form-control input-lg" />
+        <input data-bind="value: searchQuery" class="form-control input-lg"/>
     </div>
-    <div class="col-md-2 input-group">
-        <input data-bind="value: searchHowMany" class="form-control input-lg" />
+</div>
+<div class="row">
+    <div class="col-md-2">
+        <label class="input-lg">Where</label>
     </div>
+    <div class="col-md-3 input-group">
+        <input data-bind="value: searchWhere" class="form-control input-lg"/>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-2">
+        <label class="input-lg">How many</label>
+    </div>
+    <div class="col-md-3 input-group">
+        <input data-bind="value: searchHowMany" class="form-control input-lg"/>
+    </div>
+</div>
+<div class="row">
     <div class="col-md-1">
         <button class="btn btn-lg btn-primary" data-bind="click: getMap">Search</button>
     </div>
 </div>
 <div class="row">
-    <div class="col-md-2"><label>Data set name:</label></div>
-    <div class="col-md-2 input-group">
+    <div class="col-md-2">
+        <label class="input-lg">Data set name:</label>
+    </div>
+    <div class="col-md-3 input-group">
         <input data-bind="value: dataSetName" class="form-control input-lg"/>
     </div>
+</div>
+<div class="row">
     <div class="col-md-1">
         <button class="btn btn-lg btn-primary" data-bind="click: saveLocations">Save</button>
     </div>

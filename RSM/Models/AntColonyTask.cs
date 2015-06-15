@@ -11,6 +11,7 @@ namespace RSM.Models
         public double InitialPheromonValue { get; set; }
         public double TrailImportance { get; set; }
         public double VisibilityImportance { get; set; }
+        public int HomManyTimes { get; set; }
         public int Id { get; set; }
     }
 }

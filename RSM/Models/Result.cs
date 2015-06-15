@@ -38,7 +38,7 @@ namespace RSM.Models
 
         public double AverageAntScore
         {
-            get { return AntColonyResults.Count > 0 ? AntColonyResults.Sum(e => e.Score)/AntColonyResults.Count : 0; }
+            get { return AntColonyResults.Count > 0 ? AntColonyResults.Sum(e => e.ScoreAvarege) / AntColonyResults.Count : 0; }
         }
     }
 }
