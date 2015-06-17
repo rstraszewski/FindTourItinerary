@@ -78,7 +78,7 @@
 
     function displayInfobox(e) {
         if (e.targetType === "pushpin") {
-            pinInfobox.setOptions({ title: e.target.Title, description: e.target.Description, visible: true, offset: new Microsoft.Maps.Point(0, 25) });
+            pinInfobox.setOptions({ height: 250,width:300,title: e.target.Title, description: '<img src="'+ e.target.PhotoUrl +  '"/><br/><br/>' + e.target.Description, visible: true, offset: new Microsoft.Maps.Point(0, 25) });
             pinInfobox.setLocation(e.target.getLocation());
         } if (e.targetType === "polyline") {
             //pinInfobox.setOptions({ title: e.target.Title, description: e.target.Description, visible: true });
@@ -149,7 +149,8 @@
             var elemLocation = new Microsoft.Maps.Location(elem.Latitude, elem.Longitude);
             var pin = new Microsoft.Maps.Pushpin(elemLocation);
             pin.Title = elem.Name;
-            pin.Description = elem.Address + ", Category: " + elem.Category + ", Rate: " + elem.Rate;
+            pin.Description = elem.Address + "</br> Category: " + elem.Category + "/br> Rate: " + elem.Rate;
+            pin.PhotoUrl = elem.PhotoUrl;
             pinLayer.push(pin);
             //pinLayer.setOptions({ zIndex: 2 });
             Microsoft.Maps.Events.addHandler(pin, "click", displayInfobox);

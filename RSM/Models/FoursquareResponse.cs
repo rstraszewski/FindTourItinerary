@@ -257,8 +257,45 @@
     public class Photos
     {
         public int count { get; set; }
-        public object[] groups { get; set; }
+        public PhotoRoot[] groups { get; set; }
     }
+
+
+    public class PhotoRoot
+    {
+        public string type { get; set; }
+        public string name { get; set; }
+        public int count { get; set; }
+        public Item3[] items { get; set; }
+    }
+
+    public class Item3
+    {
+        public string id { get; set; }
+        public int createdAt { get; set; }
+        public string prefix { get; set; }
+        public string suffix { get; set; }
+        public int width { get; set; }
+        public int height { get; set; }
+        public User2 user { get; set; }
+        public string visibility { get; set; }
+    }
+
+    public class User2
+    {
+        public string id { get; set; }
+        public string firstName { get; set; }
+        public string lastName { get; set; }
+        public string gender { get; set; }
+        public Photo4 photo { get; set; }
+    }
+
+    public class Photo4
+    {
+        public string prefix { get; set; }
+        public string suffix { get; set; }
+    }
+
 
     public class Herenow
     {

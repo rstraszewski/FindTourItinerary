@@ -71,6 +71,8 @@ namespace RSM.Controllers
                 request.AddParameter("near", near);
                 request.AddParameter("query", query);
                 request.AddParameter("offset", offset);
+                request.AddParameter("venuePhotos", 1);
+
             
 
                 var response = await client.ExecuteGetTaskAsync(request);
@@ -85,7 +87,8 @@ namespace RSM.Controllers
                     Address = string.Join(", ", item.venue.location.formattedAddress),
                     Name = item.venue.name,
                     Rate = item.venue.rating,
-                    Category = item.venue.categories.First().name
+                    Category = item.venue.categories.First().name,
+                    PhotoUrl = item.venue.photos.groups.First().items.First().prefix + "110x110" +  item.venue.photos.groups.First().items.First().suffix
                 });
 
                 result.AddRange(locations);
