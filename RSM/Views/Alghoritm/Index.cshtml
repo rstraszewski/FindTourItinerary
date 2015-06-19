@@ -19,7 +19,8 @@
         </div>
     </div>
 <br/>
-@(Html.Kendo().TabStrip()
+<div>
+    @(Html.Kendo().TabStrip()
           .Name("alghoritmTabs")
           .Animation(conf => conf.Open(effect => effect.Fade(FadeDirection.In)))
           .Items(tabstrip =>
@@ -29,218 +30,215 @@
                   .Content(@<text>
                     @*Form for parameters of Simulated Annealing*@
                     <div class="alghoritmTab" row="parameters-sa" data-bind="visible: simmulatedAnnealingChecked">
-    <div class="row">
-        <div class="col-md-3">
-            <label>Temperature</label>
-        </div>
-        <div class="col-md-3">
-            <input data-bind="kendoNumericTextBox: { value: saTemperature, min: 0, max: 10000, step: 100, format: 'i' }" />
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>Temperature</label>
+                            </div>
+                            <div class="col-md-3">
+                                <input data-bind="kendoNumericTextBox: { value: saTemperature, min: 0, max: 10000, step: 100, format: 'i' }" />
 
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-3">
-            <label>Time constrain</label>
-        </div>
-        <div class="col-md-3">
-            <input data-bind="kendoNumericTextBox: { value: saTimeConstrain, min: 0, max: 100000, step: 1000, format: 'i' }" />
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-3">
-            <label>Number of iterations</label>
-        </div>
-        <div class="col-md-3">
-            <input data-bind="kendoNumericTextBox: { value: saNumberOfIterations, min: 0, max: 100000, step: 1000, format: 'i' }" />
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-3">
-            <label>Temperature change parameter</label>
-        </div>
-        <div class="col-md-3">
-            <input data-bind="kendoNumericTextBox: { value: saTemperatureAlpha, min: 0, max: 1, step: 0.1, format: 'n6', decimals: 6 }" />
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-3">
-            <label>How many times repeated</label>
-        </div>
-        <div class="col-md-3">
-            <input data-bind="kendoNumericTextBox: { value: saHowMany, min: 0, max: 1000, step: 1, format: 'i'}" />
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-3">
-            <button class="btn btn-primary" data-bind="click: addSimulatedAnnealing">Add simulated annealing to run</button>
-        </div>
-    </div>
-    <br />
-</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>Time constrain</label>
+                            </div>
+                            <div class="col-md-3">
+                                <input data-bind="kendoNumericTextBox: { value: saTimeConstrain, min: 0, max: 100000, step: 1000, format: 'i' }" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>Number of iterations</label>
+                            </div>
+                            <div class="col-md-3">
+                                <input data-bind="kendoNumericTextBox: { value: saNumberOfIterations, min: 0, max: 100000, step: 1000, format: 'i' }" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>Temperature change parameter</label>
+                            </div>
+                            <div class="col-md-3">
+                                <input data-bind="kendoNumericTextBox: { value: saTemperatureAlpha, min: 0, max: 1, step: 0.1, format: 'n6', decimals: 6 }" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>How many times repeated</label>
+                            </div>
+                            <div class="col-md-3">
+                                <input data-bind="kendoNumericTextBox: { value: saHowMany, min: 0, max: 1000, step: 1, format: 'i'}" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <button class="btn btn-primary" data-bind="click: addSimulatedAnnealing">Add simulated annealing to run</button>
+                            </div>
+                        </div>
+                        <br />
+                    </div>
                 </text>);
 
               tabstrip.Add().Text("Ant Colony")
                   .Content(@<text>
                     @*Form for parameters of Ant Colony*@
                     <div class="alghoritmTab" row="parameters-sa" data-bind="visible: antChecked">
-    <div class="row">
-        <div class="col-md-3">
-            <label>Time constrain</label>
-        </div>
-        <div class="col-md-3">
-            <input data-bind="kendoNumericTextBox: { value: antTimeConstrain, min: 0, max: 100000, step: 1000, format: 'i' }" />
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-3">
-            <label>Number Of Iterations</label>
-        </div>
-        <div class="col-md-3">
-            <input data-bind="kendoNumericTextBox: { value: antNumberOfIterations, min: 0, max: 10000, step: 100, format: 'i' }" />
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-3">
-            <label>Number Of Ants Per Vertex</label>
-        </div>
-        <div class="col-md-3">
-            <input data-bind="kendoNumericTextBox: { value: antNumberOfAntsPerVertex, min: 0, max: 100, step: 5, format: 'i' }" />
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-3">
-            <label>Evaporation Coefficient</label>
-        </div>
-        <div class="col-md-3">
-            <input data-bind="kendoNumericTextBox: { value: antEvaporationCoefficient, min: 0, max: 1, step: 0.1, format: 'n6', decimals: 6 }" />
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-3">
-            <label>Intensity Derivative</label>
-        </div>
-        <div class="col-md-3">
-            <input data-bind="kendoNumericTextBox: { value: antIntensityDerivative, min: 0, max: 1, step: 0.1, format: 'n6', decimals: 6 }" />
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-3">
-            <label>Initial Pheromon Value</label>
-        </div>
-        <div class="col-md-3">
-            <input data-bind="kendoNumericTextBox: { value: antInitialPheromonValue, min: 0, max: 1, step: 0.00001, format: 'n6', decimals: 6 }" />
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-3">
-            <label>Trail Importance</label>
-        </div>
-        <div class="col-md-3">
-            <input data-bind="kendoNumericTextBox: { value: antTrailImportance, min: 0, max: 1, step: 0.1, format: 'n6', decimals: 6 }" />
-        </div>
-    </div>
-                <div class="row">
-                    <div class="col-md-3">
-                        <label>Visibility Importance</label>
-                    </div>
-                    <div class="col-md-3">
-                        <input data-bind="kendoNumericTextBox: { value: antVisibilityImportance, min: 0, max: 1, step: 0.1, format: 'n6', decimals: 6 }"/>
-                    </div>
-                </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>Time constrain</label>
+                            </div>
+                            <div class="col-md-3">
+                                <input data-bind="kendoNumericTextBox: { value: antTimeConstrain, min: 0, max: 100000, step: 1000, format: 'i' }" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>Number Of Iterations</label>
+                            </div>
+                            <div class="col-md-3">
+                                <input data-bind="kendoNumericTextBox: { value: antNumberOfIterations, min: 0, max: 10000, step: 100, format: 'i' }" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>Number Of Ants Per Vertex</label>
+                            </div>
+                            <div class="col-md-3">
+                                <input data-bind="kendoNumericTextBox: { value: antNumberOfAntsPerVertex, min: 0, max: 100, step: 5, format: 'i' }" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>Evaporation Coefficient</label>
+                            </div>
+                            <div class="col-md-3">
+                                <input data-bind="kendoNumericTextBox: { value: antEvaporationCoefficient, min: 0, max: 1, step: 0.1, format: 'n6', decimals: 6 }" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>Intensity Derivative</label>
+                            </div>
+                            <div class="col-md-3">
+                                <input data-bind="kendoNumericTextBox: { value: antIntensityDerivative, min: 0, max: 1, step: 0.1, format: 'n6', decimals: 6 }" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>Initial Pheromon Value</label>
+                            </div>
+                            <div class="col-md-3">
+                                <input data-bind="kendoNumericTextBox: { value: antInitialPheromonValue, min: 0, max: 1, step: 0.00001, format: 'n6', decimals: 6 }" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>Trail Importance</label>
+                            </div>
+                            <div class="col-md-3">
+                                <input data-bind="kendoNumericTextBox: { value: antTrailImportance, min: 0, max: 1, step: 0.1, format: 'n6', decimals: 6 }" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>Visibility Importance</label>
+                            </div>
+                            <div class="col-md-3">
+                                <input data-bind="kendoNumericTextBox: { value: antVisibilityImportance, min: 0, max: 1, step: 0.1, format: 'n6', decimals: 6 }" />
+                            </div>
+                        </div>
 
 
-                <div class="row">
-                    <div class="col-md-3">
-                        <label>How many times repeated</label>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>How many times repeated</label>
+                            </div>
+                            <div class="col-md-3">
+                                <input data-bind="kendoNumericTextBox: { value: antHowMany, min: 0, max: 1000, step: 1, format: 'i'}" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <button class="btn btn-primary" data-bind="click: addAnt">Add ant colony to run</button>
+                            </div>
+                        </div>
+                        <br />
                     </div>
-                    <div class="col-md-3">
-                        <input data-bind="kendoNumericTextBox: { value: antHowMany, min: 0, max: 1000, step: 1, format: 'i'}" />
-                    </div>
-                </div>
-                <div class="row">
-        <div class="col-md-3">
-            <button class="btn btn-primary" data-bind="click: addAnt">Add ant colony to run</button>
-        </div>
-    </div>
-    <br />
-</div>
                 </text>);
 
               tabstrip.Add().Text("Repetead Nearest Neigbour")
                   .Content(@<text>
-                   @*Form for parameters of Repeated Nerest Neigbour*@
-                <div class="alghoritmTab" row="parameters-sa" data-bind="visible: nearestNeigbourChecked">
-    <div class="row">
-        <div class="col-md-3">
-            <label>Time constrain</label>
-        </div>
-        <div class="col-md-3">
-            <input data-bind="kendoNumericTextBox: { value: nnTimeConstrain, min: 0, max: 100000, step: 1000, format: 'i' }" />
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-3">
-            <button class="btn btn-primary" data-bind="click: addNn">Add NN to run</button>
-        </div>
-    </div>
-    <br />
-</div>
+                    @*Form for parameters of Repeated Nerest Neigbour*@
+                    <div class="alghoritmTab" row="parameters-sa" data-bind="visible: nearestNeigbourChecked">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>Time constrain</label>
+                            </div>
+                            <div class="col-md-3">
+                                <input data-bind="kendoNumericTextBox: { value: nnTimeConstrain, min: 0, max: 100000, step: 1000, format: 'i' }" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <button class="btn btn-primary" data-bind="click: addNn">Add NN to run</button>
+                            </div>
+                        </div>
+                        <br />
+                    </div>
                 </text>);
 
               tabstrip.Add().Text("Charts to draw")
                   .Content(@<text>
-                               <div class="alghoritmTab">
-                                    <div class="row">
-                                   <div class="col-md-3">
-                                       <input type="checkbox" data-bind="checked: saIterationScoreChecked"/>SA Score - Iteration
-                                   </div>
-                                   </div>
-                                   <div class="row">
-                                       <div class="col-md-3">
-                                           <input type="checkbox" data-bind="checked: saTemperatureScoreChecked"/>SA Score - Temperature
-                                       </div>
-                                   </div>
-                                   <div class="row">
-                                       <div class="col-md-3">
-                                           <input type="checkbox" data-bind="checked: saTemperatureAlphaScoreChecked"/>SA Temperature Alpha - Score
-                                       </div>
-                                   </div>
-                                   <div class="row">
-                                       <div class="col-md-3">
-                                           <input type="checkbox" data-bind="checked: alghoritmSaChecked"/>SA
-                                       </div>
-                                   </div>
-                                   <div class="row">
-                                       <div class="col-md-3">
-                                           <input type="checkbox" data-bind="checked: alghoritmAntChecked"/>AC
-                                       </div>
-                                   </div>
-                                   <div class="row">
-                                       <div class="col-md-3">
-                                           <input type="checkbox" data-bind="checked: alghoritmNnChecked"/>NN
-                                       </div>
-                                   </div>
-                                   <div class="row">
-                                       <div class="col-md-3">
-                                           <input type="checkbox" data-bind="checked: alghoritmCompareChecked"/>All
-                                       </div>
-                                   </div>
-                               </div>
+                    <div class="alghoritmTab">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <input type="checkbox" data-bind="checked: saIterationScoreChecked" />SA Score - Iteration
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <input type="checkbox" data-bind="checked: saTemperatureScoreChecked" />SA Score - Temperature
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <input type="checkbox" data-bind="checked: saTemperatureAlphaScoreChecked" />SA Temperature Alpha - Score
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <input type="checkbox" data-bind="checked: alghoritmSaChecked" />SA
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <input type="checkbox" data-bind="checked: alghoritmAntChecked" />AC
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <input type="checkbox" data-bind="checked: alghoritmNnChecked" />NN
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <input type="checkbox" data-bind="checked: alghoritmCompareChecked" />All
+                            </div>
+                        </div>
+                    </div>
                 </text>);
           })
-      )
+    )
+</div>
 <br/>
 <div class="row">
 <div class="col-md-3">
 
-    <button class="btn" data-bind="click: runAlghoritms">Run Alghoritms</button>
+    <button class="btn btn-lg btn-primary" data-bind="click: runAlghoritms">Run Alghoritms</button>
 </div>
 </div>
-
-
-
-
-
+<br/>
 <div class="panel row" id="alghoritmsToRun">
     <div class="panel panel-default">
         <div class="panel-heading">Simmulated annealing:</div>
@@ -307,9 +305,10 @@
 
 <div class="chart" data-bind="visible: alghoritmAntChecked, kendoChart: { data: alghoritmAntData, title: {text: 'Ant colony alghoritm'},valueAxis: [{name: 'Score'}], legend: {visible:false}, seriesDefaults: { type: 'bar'}, series: [{ name: 'score', field: 'value' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value#'} }"></div>
 
-<div class="chart" data-bind="visible: alghoritmNnChecked, kendoChart: { data: alghoritmNnData, title: {text: 'Repeated nearest neigbour alghoritm'},valueAxis: [{name: 'Score'}], legend: {visible:false}, seriesDefaults: { type: 'bar'}, series: [{ name: 'score', field: 'value' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value#'} }"></div>
+<div class="chart" data-bind="visible: alghoritmNnChecked, kendoChart: { data: alghoritmNnData, title: {text: 'Repeated nearest neigbour alghoritm'},valueAxis: [{name: 'Score'}], legend: {visible:false}, seriesDefaults: { type: 'column'}, series: [{ name: 'score', field: 'value' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value#'} }"></div>
 
-<div class="chart" data-bind="visible: alghoritmCompareChecked, kendoChart: { data: alghoritmCompareData, title: {text: 'All alghoritms - comparision'},valueAxis: [{name: 'Score'}], legend: {visible:false}, seriesDefaults: { type: 'bar'},categoryAxis: {categories: ['Simulated Annealing','Repeated Nearest Neigbour','Ant Colony']}, series: [{ name: 'score', field: 'value' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value#'} }"></div>
+<div class="chart" data-bind="visible: alghoritmCompareChecked, kendoChart: { data: alghoritmCompareData, title: {text: 'All alghoritms - comparision'},valueAxis: [{name: 'Score'}], legend: {visible:false}, seriesDefaults: { type: 'column'},categoryAxis: {categories: ['Simulated Annealing','Repeated Nearest Neigbour','Ant Colony']}, series: [{ name: 'score', field: 'value' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value#'} }"></div>
+<div class="chart" data-bind="visible: alghoritmCompareChecked, kendoChart: { group: {field: 'name'}, data: alghoritmCompareDataWithSet, title: {text: 'All alghoritms - comparision'},valueAxis: [{name: 'Score'}],seriesColors: ['blue', 'red', 'yellow'], legend: {visible:true}, seriesDefaults: { type: 'column'},categoryAxis: {field: 'dataSet'}, series: [{ name: 'SA', field: 'value' },{ name: 'RNN', field: 'valueB' },{ name: 'Ant', field: 'valueC' }], tooltip:{visible: true, format: '{0}%', template: 'Score: #=value#'} }"></div>
 
 
 <script>
@@ -325,6 +324,7 @@
             center: new Microsoft.Maps.Location(51.110251, 17.036105),
             zoom: 13
         });
+        Microsoft.Maps.loadModule("Microsoft.Maps.Directions", { callback: createWalkingRoute });
     }
 
     function drawLocations(locations) {
@@ -355,6 +355,37 @@
         });
         map.entities.push(linesLayer);
     }
+    var directionsManager = null;
+    function createWalkingRoute() {
+        directionsManager = new Microsoft.Maps.Directions.DirectionsManager(map);
+        //Microsoft.Maps.Events.addHandler(directionsManager, "directionsUpdated", displayDistanceAndTime);
+    }
+
+    function groupBy(array, f) {
+        var groups = {};
+        array.forEach(function (o) {
+            var group = JSON.stringify(f(o));
+            groups[group] = groups[group] || [];
+            groups[group].push(o);
+        });
+        return Object.keys(groups).map(function (group) {
+            return groups[group];
+        })
+    }
+
+
+    function drawPath(locations) {
+        directionsManager.resetDirections();
+        directionsManager.setRequestOptions({ routeMode: Microsoft.Maps.Directions.RouteMode.walking });
+        locations.forEach(function (elem, index) {
+            var elemLocation = new Microsoft.Maps.Location(elem.Latitude, elem.Longitude);
+            var waypoint = new Microsoft.Maps.Directions.Waypoint({ location: elemLocation });
+            directionsManager.addWaypoint(waypoint);
+
+        });
+        directionsManager.calculateDirections();
+
+    }
 
     var lastResult;
     //////////////////
@@ -381,7 +412,7 @@
         this.saTemperature = ko.observable("150");
         this.saTimeConstrain = ko.observable("3000");
         this.saNumberOfIterations = ko.observable("50000");
-        this.saTemperatureAlpha = ko.observable("0.99");
+        this.saTemperatureAlpha = ko.observable("0.9999");
         this.saHowMany = ko.observable("1");
         this.simulatedAnnealingToRun = ko.observableArray();
         ////
@@ -408,6 +439,8 @@
             var saAlgs = that.simulatedAnnealingToRun();
             var antAlgs = that.antToRun();
             var nnAlgs = that.nnToRun();
+            $(".block").css("visibility", "visible");
+
             target.append(spinner.el);
             $.post("/Alghoritm/Run", { saTasks: saAlgs, antTasks: antAlgs, nnTasks: nnAlgs }, function (result) {
                 lastResult = result;
@@ -418,7 +451,7 @@
                 that.alghoritmSaData.removeAll();
                 that.alghoritmAntData.removeAll();
                 that.alghoritmNnData.removeAll();
-
+                that.alghoritmCompareDataWithSet.removeAll();
                 $.each(result.SimulatedAnnealingResults, function (index, elem) {
                     that.simulatedAnnealingToRun().filter(function (e) {
                         return e.Id === elem.Id;
@@ -439,7 +472,16 @@
                 that.alghoritmCompareData.push({ name: 'score', value: result.AverageSaScore });
                 that.alghoritmCompareData.push({ name: 'score', value: result.AverageNnScore });
                 that.alghoritmCompareData.push({ name: 'score', value: result.AverageAntScore });
+                
+                
+                $.each(result.DataSetResults, function (index, elem) {
+                    that.alghoritmCompareDataWithSet.push({ name: 'SA', value: elem.ScoresSaAvarage, valueB: elem.ScoresNnAvarage, valueC: elem.ScoresAntAvarage, dataSet: elem.DataSet });
+                });
+
+                }).done(function (){
                 spinner.spin();
+                $(".block").css("visibility", "hidden");
+
             });
         };
 
@@ -467,7 +509,7 @@
                 map.entities.clear();
                 pinLayer.clear();
                 linesLayer.clear();
-                drawLocations(found.Paths[0]);
+                drawPath(found.Paths[0]);
             }
         }
 
@@ -491,7 +533,7 @@
                 map.entities.clear();
                 pinLayer.clear();
                 linesLayer.clear();
-                drawLocations(found.Path);
+                drawPath(found.Path);
             }
         }
 
@@ -523,7 +565,7 @@
                 map.entities.clear();
                 pinLayer.clear();
                 linesLayer.clear();
-                drawLocations(found.Path);
+                drawPath(found.Path);
             }
         }
 
@@ -531,6 +573,7 @@
         this.saTemperatureScoreData = ko.observableArray();
         this.saTemperatureAlphaScoreData = ko.observableArray();
         this.alghoritmCompareData = ko.observableArray();
+        this.alghoritmCompareDataWithSet = ko.observableArray();
         this.alghoritmSaData = ko.observableArray();
         this.alghoritmAntData = ko.observableArray();
         this.alghoritmNnData = ko.observableArray();

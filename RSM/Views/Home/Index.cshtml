@@ -44,6 +44,11 @@
         <button class="btn btn-lg btn-primary" data-bind="click: saveLocations">Save</button>
     </div>
 </div>
+<div class="row">
+    <div class="col-md-1">
+        <button class="btn btn-lg btn-primary" data-bind="click: turnLines">Edges on/off</button>
+    </div>
+</div>
 
 <br />
 <div class="row">
@@ -65,20 +70,29 @@
     var query = "atrakcje turystyczne";
     var locations = null;
     function createWalkingRoute() {
+        debugger;
         directionsManager = new Microsoft.Maps.Directions.DirectionsManager(map);
         Microsoft.Maps.Events.addHandler(directionsManager, "directionsUpdated", displayDistanceAndTime);
     }
 
     function displayDistanceAndTime(e) {
+        debugger;
         //alert("Total Distance: " + e.routeSummary[0].distance + " miles\n" + "Total Time: " + e.routeSummary[0].time / 60 + " minutes");
-        pinInfobox.setOptions({ title: title, offset: new Microsoft.Maps.Point(0, 0), description: "Distance: " + e.routeSummary[0].distance.toFixed(2) + " km" + ", Duration: " + (e.routeSummary[0].time / 60).toFixed(2) + " min", visible: true });
-        var newLoc = new Microsoft.Maps.Location(Math.sqrt(Math.pow(locs[0].latitude, 2) / 2 + Math.pow(locs[1].latitude, 2) / 2), Math.sqrt(Math.pow(locs[0].longitude, 2) / 2 + Math.pow(locs[1].longitude, 2) / 2));
+        pinInfobox.setOptions({ height: 100, title: title, offset: new Microsoft.Maps.Point(0, 0), description: "Distance: " + e.routeSummary[0].distance.toFixed(2) + " km" + ", Duration: " + (e.routeSummary[0].time / 60).toFixed(2) + " min", visible: true });
+        //var l1_lat = (Math.abs(locs[0].latitude) - Math.abs(locs[1].latitude))/2 + Math.min(locs[0].latitude, locs[1].latitude);
+        var l1_lat = ((locs[0].latitude) + (locs[1].latitude)) / 2;
+        //var l1_long = (Math.abs(locs[0].longitude) - Math.abs(locs[1].longitude))/2 + Math.min(locs[0].longitude, locs[1].longitude);
+        var l1_long = (locs[0].longitude + (locs[1].longitude)) / 2;
+        //var newLoc = new Microsoft.Maps.Location(Math.sqrt(Math.pow(locs[0].latitude, 2) / 2 + Math.pow(locs[1].latitude, 2) / 2), Math.sqrt(Math.pow(locs[0].longitude, 2) / 2 + Math.pow(locs[1].longitude, 2) / 2));
+        var newLoc = new Microsoft.Maps.Location(l1_lat, l1_long);
+
         pinInfobox.setLocation(newLoc);
     }
 
     function displayInfobox(e) {
+        debugger;
         if (e.targetType === "pushpin") {
-            pinInfobox.setOptions({ height: 250,width:300,title: e.target.Title, description: '<img src="'+ e.target.PhotoUrl +  '"/><br/><br/>' + e.target.Description, visible: true, offset: new Microsoft.Maps.Point(0, 25) });
+            pinInfobox.setOptions({ height: 260,width:300,title: e.target.Title, description: '<img src="'+ e.target.PhotoUrl +  '"/><br/><br/>' + e.target.Description, visible: true, offset: new Microsoft.Maps.Point(0, 25) });
             pinInfobox.setLocation(e.target.getLocation());
         } if (e.targetType === "polyline") {
             //pinInfobox.setOptions({ title: e.target.Title, description: e.target.Description, visible: true });
@@ -102,13 +116,13 @@
 
     function blueLine(e) {
         if (e.targetType === "polyline") {
-            e.target.setOptions({ strokeColor: new Microsoft.Maps.Color(255, 0, 0, 255), zIndex: 10000 });
+            e.target.setOptions({ strokeColor: new Microsoft.Maps.Color(255, 0, 0, 255), zIndex: 100000 });
         }
     }
 
     function redLine(e) {
         if (e.targetType === "polyline") {
-            e.target.setOptions({ strokeColor: new Microsoft.Maps.Color(255, 255, 0, 0) });
+            e.target.setOptions({ strokeColor: new Microsoft.Maps.Color(256, 255, 0, 0) });
         }
     }
 
@@ -149,7 +163,7 @@
             var elemLocation = new Microsoft.Maps.Location(elem.Latitude, elem.Longitude);
             var pin = new Microsoft.Maps.Pushpin(elemLocation);
             pin.Title = elem.Name;
-            pin.Description = elem.Address + "</br> Category: " + elem.Category + "/br> Rate: " + elem.Rate;
+            pin.Description = elem.Address + "</br> Category: " + elem.Category + "</br> Rate: " + elem.Rate;
             pin.PhotoUrl = elem.PhotoUrl;
             pinLayer.push(pin);
             //pinLayer.setOptions({ zIndex: 2 });
@@ -212,6 +226,8 @@
         //map.entities.push(infoboxLayer);
     }
 
+    var linesTurned = true;
+
     function ViewModel() {
         var that = this;
         this.searchQuery = ko.observable("");
@@ -229,17 +245,37 @@
             map.entities.push(infoboxLayer);
             //var searchManager = new Microsoft.Maps.Search.SearchManager(map);
             //searchManager.search({ what: query, where: where, count: 50, callback: geocodeCallback });
+            target.append(spinner.el);
+            $(".block").css("visibility", "visible");
             $.post("/Home/FindLocations", { query: query, near: where, howMany: howMany }, function (result) {
                 locations = result;
                 drawLocations(result.locations);
+            }).done(function () {
+                spinner.spin();
+                $(".block").css("visibility", "hidden");
+
             });
+        }
+        this.turnLines = function () {
+            if (linesTurned) {
+                linesLayer.setOptions({ zIndex: 0, visible: false });
+                linesTurned = false;
+            } else {
+                linesLayer.setOptions({ zIndex: 0, visible: true });
+                linesTurned = true;
+            }
         }
         this.saveLocations = function () {
             target.append(spinner.el);
+            $(".block").css("visibility", "visible");
             var where = that.searchWhere();
             var name = that.dataSetName();
             $.post("/Home/SaveDataSet", { locations: JSON.stringify(locations.locations), where: where, dataSetName: name }, function() {
+               
+            }).done(function (){
                 spinner.spin();
+                $(".block").css("visibility", "hidden");
+
             });
         }
     }

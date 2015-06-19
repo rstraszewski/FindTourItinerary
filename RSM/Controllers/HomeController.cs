@@ -88,7 +88,9 @@ namespace RSM.Controllers
                     Name = item.venue.name,
                     Rate = item.venue.rating,
                     Category = item.venue.categories.First().name,
-                    PhotoUrl = item.venue.photos.groups.First().items.First().prefix + "110x110" +  item.venue.photos.groups.First().items.First().suffix
+                    PhotoUrl = item.venue.photos.groups.Count() != 0 && item.venue.photos.groups.First().items.Count()!=0
+                        ? item.venue.photos.groups.First().items.First().prefix + "110x110" +  item.venue.photos.groups.First().items.First().suffix 
+                        : ""
                 });
 
                 result.AddRange(locations);

@@ -8,7 +8,7 @@ namespace RSM.Entities
         public virtual Location LocA { get; set; }
         public virtual Location LocB { get; set; }
         public double DurationInSeconds { get; set; }
-
+        public virtual long DataSetId { get; set; }
         public string DurationAsString
         {
             get
